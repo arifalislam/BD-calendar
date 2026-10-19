@@ -1,0 +1,921 @@
+<title>Bangladesh Sun Almanac</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Hind+Siliguri:wght@400;500;600;700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap">
+<style>
+  /* Layout: one 960px column. Header + theme toggle, year switch, six-season year ring,
+     Day / Week / Month tabs, content area, date popup (Bengali + Hijri). */
+  :root{
+    --bg:#ffffff;
+    --surface:#f3f4f9;
+    --ink:#0a0b10;
+    --dim:#4b5262;
+    --faint:#697085;
+    --line:#e2e4ed;
+    --focus:#2563ff;
+
+    --bosonto:#ff2e93;
+    --grishmo:#ffc400;
+    --barsha:#2563ff;
+    --sharat:#00c46a;
+    --hemanto:#ff6a00;
+    --sheet:#8b5cf6;
+
+    --f-display:'Archivo','Hind Siliguri',system-ui,sans-serif;
+    --f-body:'Instrument Sans','Hind Siliguri',system-ui,sans-serif;
+    --f-mono:'JetBrains Mono','Hind Siliguri',ui-monospace,monospace;
+    --f-bn:'Hind Siliguri','Noto Sans Bengali',system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#07080c; --surface:#10121a; --ink:#f4f5fa; --dim:#a3a9b8; --faint:#8a91a4; --line:#232636; --focus:#7aa2ff;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#07080c; --surface:#10121a; --ink:#f4f5fa; --dim:#a3a9b8; --faint:#8a91a4; --line:#232636; --focus:#7aa2ff;
+    color-scheme:dark;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--f-body);
+    font-size:15px;
+    line-height:1.4;
+    -webkit-font-smoothing:antialiased;
+    padding-left:max(16px, env(safe-area-inset-left, 0px));
+    padding-right:max(16px, env(safe-area-inset-right, 0px));
+    padding-block:28px 64px;
+  }
+  .wrap{ max-width:960px; margin:0 auto; }
+  button{ font:inherit; color:inherit; background:none; border:0; padding:0; cursor:pointer; }
+  button:focus-visible, dialog:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+  button:disabled{ opacity:.3; cursor:not-allowed; }
+  .num, .t, .val, .stat .v, .nav-label{ font-variant-numeric:tabular-nums; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+
+  /* ---------- header ---------- */
+  .head{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:28px; }
+  .eyebrow{
+    font-family:var(--f-mono); font-size:11px; font-weight:500;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--dim); margin-bottom:10px;
+  }
+  .eyebrow .bn{ font-family:var(--f-bn); letter-spacing:.02em; text-transform:none; font-size:13px; }
+  h1{
+    margin:0;
+    font-family:var(--f-display);
+    font-stretch:125%;
+    font-weight:800;
+    font-size:clamp(28px, 6.2vw, 48px);
+    line-height:1;
+    letter-spacing:-.02em;
+    text-transform:uppercase;
+    text-wrap:balance;
+  }
+  .coords{ margin-top:10px; font-family:var(--f-mono); font-size:12px; color:var(--dim); }
+
+  .theme-btn{
+    display:flex; align-items:center; gap:8px;
+    border:2px solid var(--ink);
+    padding:7px 12px 7px 10px;
+    font-family:var(--f-mono); font-size:12px; font-weight:600;
+    letter-spacing:.04em; text-transform:uppercase;
+    flex:none;
+  }
+  .theme-btn:hover{ background:var(--ink); color:var(--bg); }
+  .theme-btn svg{ width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .theme-btn .i-sun{ display:none; }
+  :root[data-theme="dark"] .theme-btn .i-sun{ display:block; }
+  :root[data-theme="dark"] .theme-btn .i-moon{ display:none; }
+
+  /* ---------- year row ---------- */
+  .year-row{ display:flex; align-items:center; gap:14px; margin-bottom:22px; flex-wrap:wrap; }
+  .seg{ display:flex; border:2px solid var(--ink); }
+  .seg button{
+    padding:8px 18px; font-family:var(--f-mono); font-size:14px; font-weight:600;
+    border-right:2px solid var(--ink);
+  }
+  .seg button:last-child{ border-right:0; }
+  .seg button[aria-pressed="true"]{ background:var(--ink); color:var(--bg); }
+  .seg button[aria-pressed="false"]:hover{ background:var(--surface); }
+  .year-tag{ font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--dim); }
+  .ghost-btn{
+    margin-left:auto; border:2px solid var(--ink); padding:7px 14px;
+    font-family:var(--f-mono); font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+  }
+  .ghost-btn:hover{ background:var(--ink); color:var(--bg); }
+
+  /* ---------- season ring ---------- */
+  .ring-block{ margin-bottom:32px; }
+  .ring{ position:relative; display:flex; height:40px; }
+  .ring-seg{ display:flex; align-items:center; justify-content:center; min-width:0; overflow:hidden; }
+  .ring-seg .k{ font-family:var(--f-bn); font-size:16px; font-weight:700; white-space:nowrap; }
+  .ring-marker{
+    position:absolute; top:-8px; bottom:-8px; width:4px; margin-left:-2px;
+    background:var(--ink); box-shadow:0 0 0 2px var(--bg);
+  }
+  .ring-months{ position:relative; height:18px; margin-top:6px; }
+  .ring-months > span{
+    position:absolute; top:0; font-family:var(--f-mono); font-size:10px; font-weight:500;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--faint);
+    padding-left:4px; border-left:1px solid var(--line); height:14px; line-height:14px;
+  }
+  .ring-months .rest{ display:none; }
+  @media (min-width:640px){ .ring-months .rest{ display:inline; } }
+
+  .carousel-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:22px 0 10px; }
+  .carousel-head .ttl{ font-family:var(--f-mono); font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .carousel-head .ttl .bn{ font-family:var(--f-bn); letter-spacing:0; text-transform:none; font-size:14px; margin-left:6px; }
+  .car-btns{ display:flex; gap:8px; }
+  .track{
+    position:relative; display:flex; gap:8px; overflow-x:auto; overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory; scrollbar-width:none; padding-bottom:2px;
+  }
+  .track::-webkit-scrollbar{ display:none; }
+  .track:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+  .track .item{
+    flex:0 0 calc((100% - 16px) / 3); scroll-snap-align:center; min-width:0;
+    border-top:6px solid var(--s); background:var(--surface); padding:14px 16px 16px;
+  }
+  @media (max-width:640px){ .track .item{ flex-basis:78%; } }
+  .track .item{ transition:background-color .25s, color .25s; }
+  .track .item.on{ background:var(--s); color:var(--on); outline:2px solid var(--ink); outline-offset:-2px; }
+  .item.on .rg{ color:inherit; opacity:.8; }
+  .item .top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .item .tag{ font-family:var(--f-mono); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
+  .item .tag:empty{ display:none; }
+  .item.on .tag{ background:var(--on); color:var(--s); padding:3px 7px; }
+  .item .bnm{ font-family:var(--f-bn); font-weight:700; font-size:32px; line-height:1.2; }
+  .item .nm{ font-family:var(--f-display); font-weight:700; font-size:14px; margin-top:2px; }
+  .item .mo{ font-family:var(--f-bn); font-weight:500; font-size:15px; margin-top:12px; }
+  .item .rg{ font-family:var(--f-mono); font-size:11px; color:var(--dim); margin-top:2px; }
+
+  /* ---------- view row ---------- */
+  .view-row{ display:flex; align-items:center; gap:16px; margin-bottom:16px; flex-wrap:wrap; }
+  .nav-cluster{ display:flex; align-items:center; gap:8px; margin-left:auto; }
+  .nav-btn{
+    width:34px; height:34px; border:2px solid var(--ink);
+    display:flex; align-items:center; justify-content:center; font-size:18px; line-height:1;
+  }
+  .nav-btn:hover:not(:disabled){ background:var(--ink); color:var(--bg); }
+  .nav-label{ font-family:var(--f-display); font-weight:700; font-size:15px; min-width:150px; text-align:center; }
+  @media (max-width:560px){ .nav-cluster{ margin-left:0; width:100%; justify-content:space-between; } .nav-label{ flex:1; } }
+
+  /* ---------- month ---------- */
+  .weekday-row, .month-grid{ display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:6px; }
+  .weekday-row{ margin-bottom:6px; }
+  .weekday-row div{
+    font-family:var(--f-mono); font-size:11px; font-weight:600; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--ink); padding:2px 0 4px; border-bottom:2px solid var(--ink);
+  }
+  .weekday-row div.wk{ color:var(--faint); border-bottom-color:var(--line); }
+  .day-cell{
+    display:flex; flex-direction:column; gap:8px; min-height:88px; padding:8px 8px 8px;
+    background:var(--surface); border-top:4px solid var(--s); text-align:left; min-width:0;
+  }
+  .day-cell.empty{ background:transparent; border-top-color:transparent; pointer-events:none; }
+  .day-cell:hover{ outline:2px solid var(--ink); outline-offset:-2px; }
+  .day-cell.today{ background:var(--ink); color:var(--bg); }
+  .day-cell.today:hover{ outline-color:var(--s); }
+  .day-cell .num{ font-family:var(--f-display); font-weight:800; font-size:16px; line-height:1; }
+  .day-cell.wk .num{ color:var(--dim); }
+  .day-cell.today .num{ color:var(--bg); }
+  .t{ font-family:var(--f-mono); font-size:11px; font-weight:500; line-height:1.55; white-space:nowrap; }
+  .t span{ display:block; }
+  .t small{ font-size:.78em; margin-left:1px; opacity:.7; }
+  .tri{ display:inline-block; width:7px; height:6px; margin-right:4px; background:currentColor; clip-path:polygon(50% 0, 0 100%, 100% 100%); }
+  .tri.dn{ transform:rotate(180deg); }
+  .t .dn-row{ opacity:.72; }
+  @media (max-width:560px){
+    .weekday-row, .month-grid{ gap:3px; }
+    .day-cell{ min-height:66px; padding:5px 3px 5px 4px; gap:5px; }
+    .day-cell .num{ font-size:13px; }
+    .t{ font-size:8.5px; }
+    .tri{ width:5px; height:5px; margin-right:2px; }
+    .weekday-row div{ font-size:9px; letter-spacing:.02em; }
+  }
+
+  /* ---------- week ---------- */
+  .week-list{ display:flex; flex-direction:column; gap:6px; }
+  .week-row{
+    display:grid; grid-template-columns:minmax(0,1fr) auto auto auto; gap:18px; align-items:center;
+    padding:14px 16px; background:var(--surface); border-left:6px solid var(--s); text-align:left; width:100%;
+  }
+  .week-row:hover{ outline:2px solid var(--ink); outline-offset:-2px; }
+  .week-row.today{ background:var(--ink); color:var(--bg); }
+  .week-row .wd{ font-family:var(--f-display); font-weight:700; font-size:16px; }
+  .week-row .wd .dow{ display:block; font-family:var(--f-mono); font-weight:500; font-size:11px; letter-spacing:.08em; text-transform:uppercase; opacity:.65; margin-bottom:2px; }
+  .week-row .val{ font-family:var(--f-mono); font-size:14px; font-weight:500; text-align:right; white-space:nowrap; }
+  .week-row .val small{ font-size:.78em; opacity:.7; margin-left:2px; }
+  .week-row .len{ opacity:.65; min-width:64px; }
+  @media (max-width:560px){
+    .week-row{ grid-template-columns:minmax(0,1fr) auto auto; gap:10px; padding:12px; }
+    .week-row .len{ display:none; }
+    .week-row .val{ font-size:12px; }
+  }
+
+  /* ---------- day ---------- */
+  .day-view{ background:var(--surface); border-top:8px solid var(--s); padding:26px 24px 24px; }
+  .day-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  .day-date{ font-family:var(--f-display); font-stretch:112%; font-weight:800; font-size:clamp(26px,5.5vw,38px); line-height:1.05; letter-spacing:-.01em; }
+  .day-dow{ font-family:var(--f-mono); font-size:12px; color:var(--dim); margin-top:6px; letter-spacing:.04em; text-transform:uppercase; }
+  .badge{
+    display:inline-flex; align-items:center; gap:8px; background:var(--s); color:var(--on);
+    font-family:var(--f-mono); font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    padding:6px 10px; white-space:nowrap;
+  }
+  .badge .bn{ font-family:var(--f-bn); letter-spacing:0; text-transform:none; font-size:13px; }
+  .arc-wrap{ margin:20px 0 4px; }
+  .arc-wrap svg{ display:block; width:100%; height:auto; max-height:170px; }
+  .arc-base{ stroke:var(--ink); stroke-width:2; }
+  .arc-path{ fill:none; stroke:var(--s); stroke-width:3; stroke-dasharray:2 7; stroke-linecap:round; }
+  .arc-sun{ fill:var(--s); }
+  .arc-halo{ fill:var(--s); opacity:.2; }
+  .arc-noon{ stroke:var(--faint); stroke-width:1; stroke-dasharray:2 4; }
+  .stat-row{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; margin-top:18px; }
+  @media (max-width:640px){ .stat-row{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
+  .stat .lbl{ font-family:var(--f-mono); font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); margin-bottom:4px; }
+  .stat .v{ font-family:var(--f-display); font-stretch:110%; font-weight:800; font-size:clamp(22px,4.4vw,30px); line-height:1.05; white-space:nowrap; }
+  .stat .v small{ font-size:.5em; font-weight:700; margin-left:3px; letter-spacing:.04em; text-transform:uppercase; }
+  .cal-strip{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; margin-top:22px; padding-top:18px; border-top:2px solid var(--ink); }
+  @media (max-width:640px){ .cal-strip{ grid-template-columns:minmax(0,1fr); } }
+
+  .cal-line .k{ font-family:var(--f-mono); font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .cal-line .big{ font-family:var(--f-bn); font-weight:700; font-size:24px; line-height:1.25; margin-top:2px; }
+  .cal-line .sm{ font-family:var(--f-mono); font-size:12px; color:var(--dim); margin-top:2px; }
+
+  footer{ margin-top:40px; font-family:var(--f-mono); font-size:11px; color:var(--faint); line-height:1.75; max-width:70ch; }
+
+  /* ---------- date popup ---------- */
+  dialog{
+    width:min(460px, calc(100vw - 32px)); max-height:calc(100dvh - 32px); overflow:auto;
+    margin:auto; padding:0; border:2px solid var(--ink); background:var(--bg); color:var(--ink);
+  }
+  dialog::backdrop{ background:rgba(5,6,10,.6); }
+  dialog[open]{ animation:pop .16s ease-out; }
+  @keyframes pop{ from{ transform:translateY(8px); opacity:0; } to{ transform:none; opacity:1; } }
+  .dlg-band{ height:10px; background:var(--s); }
+  .dlg-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:18px 20px 4px; }
+  .dlg-date{ font-family:var(--f-display); font-stretch:112%; font-weight:800; font-size:24px; line-height:1.1; letter-spacing:-.01em; }
+  .dlg-dow{ font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--dim); margin-top:6px; }
+  .x-btn{ width:34px; height:34px; border:2px solid var(--ink); font-size:18px; line-height:1; flex:none; }
+  .x-btn:hover{ background:var(--ink); color:var(--bg); }
+  .dlg-block{ padding:16px 20px; border-top:1px solid var(--line); margin-top:14px; }
+  .dlg-block:first-of-type{ margin-top:12px; }
+  .dlg-block .k{ display:flex; justify-content:space-between; gap:8px; font-family:var(--f-mono); font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .dlg-block .big{ font-family:var(--f-bn); font-weight:700; font-size:30px; line-height:1.25; margin-top:4px; }
+  .dlg-block .sm{ font-family:var(--f-mono); font-size:12px; color:var(--dim); margin-top:4px; }
+  .shift{ display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap; }
+  .shift .lbl{ font-size:12px; color:var(--dim); }
+  .shift .ctl{ display:flex; align-items:center; border:2px solid var(--ink); }
+  .shift .ctl button{ width:30px; height:28px; font-family:var(--f-mono); font-weight:700; font-size:15px; }
+  .shift .ctl button:hover:not(:disabled){ background:var(--ink); color:var(--bg); }
+  .shift .ctl output{ min-width:62px; text-align:center; font-family:var(--f-mono); font-size:12px; font-weight:600; border-inline:2px solid var(--ink); line-height:24px; }
+  .dlg-sun{ display:flex; gap:22px; flex-wrap:wrap; padding:14px 20px; background:var(--surface); font-family:var(--f-mono); font-size:13px; font-weight:500; }
+  .dlg-sun small{ font-size:.78em; opacity:.7; margin-left:2px; }
+  .dlg-sun .mut{ color:var(--dim); }
+  .dlg-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 20px 18px; }
+  .dlg-foot .link{ font-family:var(--f-mono); font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; border-bottom:2px solid var(--ink); padding-bottom:2px; }
+  .dlg-foot .link:hover{ background:var(--ink); color:var(--bg); }
+</style>
+<script>
+  /* apply stored or system theme before first paint of the content */
+  (function(){
+    var t = null;
+    try { t = localStorage.getItem('sunalmanac.theme'); } catch(e){}
+    if (t !== 'dark' && t !== 'light') {
+      t = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+
+<div class="wrap">
+  <header class="head">
+    <div>
+      <div class="eyebrow"><span class="bn">সূর্যোদয় ও সূর্যাস্ত</span> · Sun almanac</div>
+      <h1>Bangladesh Sun Almanac</h1>
+      <div class="coords">Times calculated for Dhaka · 23.81° N · 90.41° E · UTC+6</div>
+    </div>
+    <button class="theme-btn" id="themeBtn" data-action="toggle-theme" aria-label="Switch theme">
+      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span id="themeLabel">Dark</span>
+    </button>
+  </header>
+
+  <div class="year-row" id="yearRow"></div>
+
+  <div class="ring-block">
+    <div class="ring" id="ring" role="img" aria-label="Six Bengali seasons across the selected year"></div>
+    <div class="ring-months" id="ringMonths" aria-hidden="true"></div>
+    <div class="carousel-head">
+      <div class="ttl">Six seasons<span class="bn">ছয় ঋতু</span></div>
+      <div class="car-btns">
+        <button class="nav-btn" id="carPrev" data-action="car-prev" aria-label="Previous season">‹</button>
+        <button class="nav-btn" id="carNext" data-action="car-next" aria-label="Next season">›</button>
+      </div>
+    </div>
+    <div class="track" id="legend" tabindex="0" role="group" aria-roledescription="carousel" aria-label="Six Bengali seasons"></div>
+  </div>
+
+  <div class="view-row">
+    <div class="seg" id="viewTabs">
+      <button data-action="set-view" data-value="day">Day</button>
+      <button data-action="set-view" data-value="week">Week</button>
+      <button data-action="set-view" data-value="month">Month</button>
+    </div>
+    <div class="nav-cluster" id="navCluster"></div>
+  </div>
+
+  <div id="viewBody"></div>
+
+  <footer>
+    Sunrise and sunset use the NOAA solar algorithm for Dhaka, rounded to the minute. Other districts differ by a few minutes.
+    Seasons follow the Bengali months, two to a season. Bengali dates use Bangladesh's revised calendar.
+    Hijri dates are calculated (Umm al-Qura); Bangladesh's own moon sighting can land a day apart, so the date popup lets you shift it.
+  </footer>
+</div>
+
+<dialog id="dateDialog" aria-labelledby="dlgTitle"></dialog>
+
+<script>
+(function(){
+  "use strict";
+
+  var LAT = 23.8103, LON = 90.4125, TZ = 6, TZ_NAME = 'Asia/Dhaka';
+
+  /* ---------- today in Dhaka ---------- */
+  function dhakaNow(){
+    var o = {};
+    try {
+      new Intl.DateTimeFormat('en-GB', { timeZone:TZ_NAME, year:'numeric', month:'numeric', day:'numeric', hour:'numeric', minute:'numeric', hourCycle:'h23' })
+        .formatToParts(new Date()).forEach(function(p){ o[p.type] = p.value; });
+    } catch(e){}
+    var n = new Date();
+    return {
+      y: +o.year  || n.getFullYear(),
+      m: +o.month || (n.getMonth() + 1),
+      d: +o.day   || n.getDate(),
+      min: (o.hour !== undefined ? (+o.hour * 60 + +o.minute) : (n.getHours() * 60 + n.getMinutes()))
+    };
+  }
+  var NOW = dhakaNow();
+  var CUR_YEAR = NOW.y;
+  var YEARS = [CUR_YEAR - 1, CUR_YEAR, CUR_YEAR + 1];
+  var TODAY = { y:NOW.y, m:NOW.m, d:NOW.d };
+
+  /* ---------- data ---------- */
+  var SEASONS = [
+    { key:'grishmo', en:'Grishmo', bn:'গ্রীষ্ম', sub:'Summer',      range:'Apr 14 – Jun 14', on:'#0a0b10' },
+    { key:'barsha',  en:'Barsha',  bn:'বর্ষা',   sub:'Monsoon',     range:'Jun 15 – Aug 15', on:'#ffffff' },
+    { key:'sharat',  en:'Sharat',  bn:'শরৎ',    sub:'Autumn',      range:'Aug 16 – Oct 15', on:'#0a0b10' },
+    { key:'hemanto', en:'Hemanto', bn:'হেমন্ত',  sub:'Late autumn', range:'Oct 16 – Dec 14', on:'#0a0b10' },
+    { key:'sheet',   en:'Sheet',   bn:'শীত',    sub:'Winter',      range:'Dec 15 – Feb 12', on:'#ffffff' },
+    { key:'bosonto', en:'Bosonto', bn:'বসন্ত',   sub:'Spring',      range:'Feb 13 – Apr 13', on:'#0a0b10' }
+  ];
+  var SEASON = {};
+  SEASONS.forEach(function(s){ SEASON[s.key] = s; });
+
+  var WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var WEEKDAYS_FULL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var WEEKDAYS_BN = ['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var MON3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  var BN_MONTHS_EN = ['Boishakh','Joishtho','Asharh','Srabon','Bhadro','Ashwin','Kartik','Ogrohayon','Poush','Magh','Falgun','Choitro'];
+  var BN_MONTHS    = ['বৈশাখ','জ্যৈষ্ঠ','আষাঢ়','শ্রাবণ','ভাদ্র','আশ্বিন','কার্তিক','অগ্রহায়ণ','পৌষ','মাঘ','ফাল্গুন','চৈত্র'];
+  /* Gregorian start of each Bengali month in Bangladesh's revised calendar: [month, day, bengali month index] */
+  var BN_STARTS = [[1,14,9],[2,13,10],[3,15,11],[4,14,0],[5,15,1],[6,15,2],[7,16,3],[8,16,4],[9,16,5],[10,16,6],[11,15,7],[12,15,8]];
+
+  var HJ_EN = ['Muharram','Safar','Rabiʿ al-Awwal','Rabiʿ al-Thani','Jumada al-Ula','Jumada al-Akhirah','Rajab','Shaʿban','Ramadan','Shawwal','Dhu al-Qaʿdah','Dhu al-Hijjah'];
+  var HJ_BN = ['মুহাররম','সফর','রবিউল আউয়াল','রবিউস সানি','জমাদিউল আউয়াল','জমাদিউস সানি','রজব','শাবান','রমজান','শাওয়াল','জিলকদ','জিলহজ'];
+
+  var state = { year:CUR_YEAR, month:TODAY.m, day:TODAY.d, view:'month', hijriShift:0 };
+  try {
+    var hs = parseInt(localStorage.getItem('sunalmanac.hijriShift'), 10);
+    if (hs === -1 || hs === 0 || hs === 1) state.hijriShift = hs;
+  } catch(e){}
+
+  /* ---------- helpers ---------- */
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+  function daysInMonth(y, m){ return new Date(y, m, 0).getDate(); }
+  function isLeap(y){ return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
+  function clampDay(y, m, d){ return Math.min(d, daysInMonth(y, m)); }
+  function isWeekend(dow){ return dow === 5 || dow === 6; }
+  function bnNum(n){ return String(n).replace(/\d/g, function(c){ return '০১২৩৪৫৬৭৮৯'.charAt(+c); }); }
+  function inRange(date){ var y = date.getFullYear(); return y >= YEARS[0] && y <= YEARS[2]; }
+
+  /* Seasons follow the Bengali months: two months each, starting at Boishakh */
+  function getSeason(m, d){
+    var md = m * 100 + d;
+    if (md >= 414 && md <= 614) return 'grishmo';
+    if (md >= 615 && md <= 815) return 'barsha';
+    if (md >= 816 && md <= 1015) return 'sharat';
+    if (md >= 1016 && md <= 1214) return 'hemanto';
+    if (md >= 1215 || md <= 212) return 'sheet';
+    return 'bosonto';
+  }
+
+  /* ---------- 12-hour time ---------- */
+  function split12(min){
+    min = ((Math.round(min) % 1440) + 1440) % 1440;
+    var h = Math.floor(min / 60), m = min % 60;
+    var ap = h >= 12 ? 'pm' : 'am';
+    var h12 = h % 12; if (h12 === 0) h12 = 12;
+    return { t: h12 + ':' + pad(m), ap: ap };
+  }
+  function timeHTML(min){ var p = split12(min); return p.t + '<small>' + p.ap + '</small>'; }
+  function timeText(min){ var p = split12(min); return p.t + ' ' + p.ap; }
+  function fmtLength(a, b){
+    var diff = Math.round(b - a);
+    return Math.floor(diff / 60) + 'h ' + pad(diff % 60) + 'm';
+  }
+
+  /* ---------- solar calculation (NOAA) ---------- */
+  function calcSun(year, month, day){
+    var rad = Math.PI / 180, deg = 180 / Math.PI;
+    var y = year, m = month;
+    if (m <= 2) { y -= 1; m += 12; }
+    var A = Math.floor(y / 100);
+    var B = 2 - A + Math.floor(A / 4);
+    var JD = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + B - 1524.5;
+    var T = (JD - 2451545) / 36525;
+    var L0 = 280.46646 + T * (36000.76983 + T * 0.0003032);
+    L0 = ((L0 % 360) + 360) % 360;
+    var M = 357.52911 + T * (35999.05029 - 0.0001537 * T);
+    var e = 0.016708634 - T * (0.000042037 + 0.0000001267 * T);
+    var C = Math.sin(rad * M) * (1.914602 - T * (0.004817 + 0.000014 * T))
+          + Math.sin(rad * 2 * M) * (0.019993 - 0.000101 * T)
+          + Math.sin(rad * 3 * M) * 0.000289;
+    var trueLong = L0 + C;
+    var omega = 125.04 - 1934.136 * T;
+    var lambda = trueLong - 0.00569 - 0.00478 * Math.sin(rad * omega);
+    var seconds = 21.448 - T * (46.815 + T * (0.00059 - T * 0.001813));
+    var e0 = 23 + (26 + seconds / 60) / 60;
+    var obliq = e0 + 0.00256 * Math.cos(rad * omega);
+    var decl = Math.asin(Math.sin(rad * obliq) * Math.sin(rad * lambda)) * deg;
+    var yv = Math.tan(rad * obliq / 2); yv *= yv;
+    var eq = 4 * deg * (
+        yv * Math.sin(2 * rad * L0)
+      - 2 * e * Math.sin(rad * M)
+      + 4 * e * yv * Math.sin(rad * M) * Math.cos(2 * rad * L0)
+      - 0.5 * yv * yv * Math.sin(4 * rad * L0)
+      - 1.25 * e * e * Math.sin(2 * rad * M));
+    var haArg = Math.cos(rad * 90.833) / (Math.cos(rad * LAT) * Math.cos(rad * decl)) - Math.tan(rad * LAT) * Math.tan(rad * decl);
+    haArg = Math.max(-1, Math.min(1, haArg));
+    var ha = deg * Math.acos(haArg);
+    var noon = 720 - 4 * LON - eq + TZ * 60;
+    return { sunriseMin: noon - ha * 4, sunsetMin: noon + ha * 4, solarNoon: noon };
+  }
+
+  /* ---------- Bengali date (Bangladesh revised calendar) ---------- */
+  function bengaliDate(y, m, d){
+    var t = Date.UTC(y, m - 1, d), best = null;
+    [y - 1, y].forEach(function(yy){
+      BN_STARTS.forEach(function(s){
+        var st = Date.UTC(yy, s[0] - 1, s[1]);
+        if (st <= t && (best === null || st > best.st)) best = { st:st, idx:s[2] };
+      });
+    });
+    var year = (m > 4 || (m === 4 && d >= 14)) ? y - 593 : y - 594;
+    return { day: Math.round((t - best.st) / 864e5) + 1, monthIdx: best.idx, year: year };
+  }
+
+  /* ---------- Hijri date (calculated, with optional shift) ---------- */
+  var hijriFmt = null;
+  try {
+    hijriFmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { timeZone:TZ_NAME, day:'numeric', month:'numeric', year:'numeric' });
+  } catch(e){}
+  function civilHijri(y, m, d){
+    var a = Math.floor((14 - m) / 12), yy = y + 4800 - a, mm = m + 12 * a - 3;
+    var jd = d + Math.floor((153 * mm + 2) / 5) + 365 * yy + Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
+    var l = jd - 1948440 + 10632, n = Math.floor((l - 1) / 10631);
+    l = l - 10631 * n + 354;
+    var j = Math.floor((10985 - l) / 5316) * Math.floor((50 * l) / 17719) + Math.floor(l / 5670) * Math.floor((43 * l) / 15238);
+    l = l - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+    var hm = Math.floor((24 * l) / 709);
+    return { day: l - Math.floor((709 * hm) / 24), month: hm, year: 30 * n + j - 30 };
+  }
+  function hijriDate(y, m, d, shift){
+    var dt = new Date(Date.UTC(y, m - 1, d + shift, 6)); /* noon in Dhaka */
+    if (hijriFmt) {
+      try {
+        var o = {};
+        hijriFmt.formatToParts(dt).forEach(function(p){ o[p.type] = p.value; });
+        if (+o.day && +o.month && +o.year) return { day:+o.day, month:+o.month, year:+o.year };
+      } catch(e){}
+    }
+    return civilHijri(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate());
+  }
+
+  function calLines(y, m, d){
+    var bn = bengaliDate(y, m, d);
+    var hj = hijriDate(y, m, d, state.hijriShift);
+    return {
+      bnBig: bnNum(bn.day) + ' ' + BN_MONTHS[bn.monthIdx] + ' ' + bnNum(bn.year),
+      bnSm:  BN_MONTHS_EN[bn.monthIdx] + ' ' + bn.day + ', ' + bn.year + ' BS',
+      hjBig: bnNum(hj.day) + ' ' + HJ_BN[hj.month - 1] + ' ' + bnNum(hj.year),
+      hjSm:  hj.day + ' ' + HJ_EN[hj.month - 1] + ' ' + hj.year + ' AH'
+    };
+  }
+
+  /* ---------- render: header bits ---------- */
+  function renderTheme(){
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.getElementById('themeLabel').textContent = dark ? 'Light' : 'Dark';
+    document.getElementById('themeBtn').setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+
+  function renderYearTabs(){
+    var html = '<div class="seg" role="group" aria-label="Year">';
+    YEARS.forEach(function(y){
+      html += '<button data-action="set-year" data-value="' + y + '" aria-pressed="' + (state.year === y) + '">' + y + '</button>';
+    });
+    html += '</div><span class="year-tag">' + (state.year === CUR_YEAR ? 'Current year' : (state.year < CUR_YEAR ? 'Previous year' : 'Next year')) + '</span>';
+    html += '<button class="ghost-btn" data-action="goto-today">Today</button>';
+    document.getElementById('yearRow').innerHTML = html;
+  }
+
+  /* ---------- season carousel ---------- */
+  var SEASON_MONTHS = {
+    grishmo:'বৈশাখ – জ্যৈষ্ঠ',
+    barsha:'আষাঢ় – শ্রাবণ',
+    sharat:'ভাদ্র – আশ্বিন',
+    hemanto:'কার্তিক – অগ্রহায়ণ',
+    sheet:'পৌষ – মাঘ',
+    bosonto:'ফাল্গুন – চৈত্র'
+  };
+  var carTrack = document.getElementById('legend');
+  var carItems = [];
+  var carCur = null, carFirst = true;
+  var settleTimer = null, idleTimer = null;
+  var reduceMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var N = SEASONS.length;
+
+  function how(){ return reduceMotion ? 'auto' : 'smooth'; }
+  function centerLeft(el){ return el.offsetLeft - (carTrack.clientWidth - el.offsetWidth) / 2; }
+
+  /* three copies of the six cards; the view always rests on the middle copy */
+  function buildCarousel(){
+    var html = '';
+    for (var rep = 0; rep < 3; rep++){
+      SEASONS.forEach(function(s){
+        html += '<article class="item" data-season="' + s.key + '"' + (rep !== 1 ? ' aria-hidden="true"' : '')
+              + ' style="--s:var(--' + s.key + ');--on:' + s.on + '">'
+              + '<div class="top"><div class="bnm">' + s.bn + '</div><span class="tag"></span></div>'
+              + '<div class="nm">' + s.en + ' \u00b7 ' + s.sub + '</div>'
+              + '<div class="mo">' + SEASON_MONTHS[s.key] + '</div>'
+              + '<div class="rg">' + s.range + '</div></article>';
+      });
+    }
+    carTrack.innerHTML = html;
+    carItems = Array.prototype.slice.call(carTrack.querySelectorAll('.item'));
+    carTrack.addEventListener('scroll', onCarScroll, { passive:true });
+    window.addEventListener('resize', function(){ centerOn(carCur, 'auto', true); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ centerOn(carCur, 'auto', true); });
+  }
+
+  function centerOn(key, behavior, middle){
+    if (!key || !carItems.length) return;
+    var idx = 0;
+    SEASONS.forEach(function(s, i){ if (s.key === key) idx = i; });
+    var best = null, bestD = Infinity;
+    [0, 1, 2].forEach(function(rep){
+      var el = carItems[rep * N + idx];
+      var d = middle ? (rep === 1 ? 0 : 1e9) : Math.abs(centerLeft(el) - carTrack.scrollLeft);
+      if (d < bestD){ bestD = d; best = el; }
+    });
+    carTrack.scrollTo({ left: centerLeft(best), behavior: behavior });
+  }
+
+  /* jump by exactly one set of six when the view drifts out of the middle copy */
+  function normalize(){
+    var w = carItems[N].offsetLeft - carItems[0].offsetLeft;
+    var base = carItems[0].offsetLeft;
+    var c = carTrack.scrollLeft + carTrack.clientWidth / 2;
+    if (c < base + w) carTrack.scrollLeft += w;
+    else if (c >= base + 2 * w) carTrack.scrollLeft -= w;
+  }
+  function onCarScroll(){
+    clearTimeout(settleTimer); clearTimeout(idleTimer);
+    settleTimer = setTimeout(function(){
+      normalize();
+      /* after a few quiet seconds, bring the current season back to the centre */
+      idleTimer = setTimeout(function(){ centerOn(carCur, how(), false); }, 5000);
+    }, 140);
+  }
+
+  function updateCarousel(cur){
+    var isToday = (state.year === TODAY.y && state.month === TODAY.m && state.day === TODAY.d);
+    carItems.forEach(function(el){
+      var on = el.getAttribute('data-season') === cur;
+      el.classList.toggle('on', on);
+      el.querySelector('.tag').textContent = on ? (isToday ? 'Now' : 'Selected') : '';
+    });
+    if (cur !== carCur){
+      carCur = cur;
+      centerOn(cur, carFirst || reduceMotion ? 'auto' : 'smooth', carFirst);
+      carFirst = false;
+    }
+  }
+  function stepCarousel(dir){
+    var first = carItems[0];
+    if (!first) return;
+    carTrack.scrollBy({ left: dir * (first.offsetWidth + 8), behavior: how() });
+  }
+
+  /* ---------- render: season ring ---------- */
+  function renderRing(){
+    var y = state.year, n = isLeap(y) ? 366 : 365;
+    var runs = [];
+    for (var i = 0; i < n; i++){
+      var dt = new Date(Date.UTC(y, 0, 1 + i));
+      var key = getSeason(dt.getUTCMonth() + 1, dt.getUTCDate());
+      if (runs.length && runs[runs.length - 1].key === key) runs[runs.length - 1].n++;
+      else runs.push({ key:key, n:1 });
+    }
+    var html = '';
+    runs.forEach(function(r){
+      var s = SEASON[r.key], pct = r.n / n * 100;
+      html += '<div class="ring-seg" style="width:' + pct + '%;background:var(--' + s.key + ');color:' + s.on + '">'
+            + (pct > 8 ? '<span class="k">' + s.bn + '</span>' : '') + '</div>';
+    });
+    var ring = document.getElementById('ring');
+    ring.innerHTML = html;
+    var doy = Math.round((Date.UTC(y, state.month - 1, state.day) - Date.UTC(y, 0, 1)) / 864e5);
+    var mk = document.createElement('div');
+    mk.className = 'ring-marker';
+    mk.style.left = ((doy + 0.5) / n * 100) + '%';
+    ring.appendChild(mk);
+
+    var mh = '', acc = 0;
+    for (var m = 1; m <= 12; m++){
+      mh += '<span style="left:' + (acc / n * 100) + '%">' + MON3[m - 1].charAt(0) + '<span class="rest">' + MON3[m - 1].slice(1) + '</span></span>';
+      acc += daysInMonth(y, m);
+    }
+    document.getElementById('ringMonths').innerHTML = mh;
+
+    updateCarousel(getSeason(state.month, state.day));
+  }
+
+  /* ---------- render: tabs + nav ---------- */
+  function shiftedDate(days){
+    var b = new Date(state.year, state.month - 1, state.day);
+    b.setDate(b.getDate() + days);
+    return b;
+  }
+  function monthTarget(delta){ return new Date(state.year, state.month - 1 + delta, 1); }
+
+  function renderViewTabs(){
+    document.querySelectorAll('#viewTabs button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-value') === state.view));
+    });
+    var label, prevOk, nextOk, act;
+    if (state.view === 'month'){
+      label = MONTHS[state.month - 1] + ' ' + state.year; act = 'nav-month';
+      prevOk = inRange(monthTarget(-1)); nextOk = inRange(monthTarget(1));
+    } else if (state.view === 'week'){
+      var s = shiftedDate(-new Date(state.year, state.month - 1, state.day).getDay());
+      var e = new Date(s); e.setDate(s.getDate() + 6);
+      label = s.getMonth() === e.getMonth()
+        ? s.getDate() + ' – ' + e.getDate() + ' ' + MON3[e.getMonth()] + ' ' + e.getFullYear()
+        : s.getDate() + ' ' + MON3[s.getMonth()] + ' – ' + e.getDate() + ' ' + MON3[e.getMonth()] + ' ' + e.getFullYear();
+      act = 'nav-week'; prevOk = inRange(shiftedDate(-7)); nextOk = inRange(shiftedDate(7));
+    } else {
+      label = state.day + ' ' + MON3[state.month - 1] + ' ' + state.year; act = 'nav-day';
+      prevOk = inRange(shiftedDate(-1)); nextOk = inRange(shiftedDate(1));
+    }
+    document.getElementById('navCluster').innerHTML =
+        '<button class="nav-btn" data-action="' + act + '" data-value="-1" aria-label="Previous"' + (prevOk ? '' : ' disabled') + '>‹</button>'
+      + '<span class="nav-label">' + label + '</span>'
+      + '<button class="nav-btn" data-action="' + act + '" data-value="1" aria-label="Next"' + (nextOk ? '' : ' disabled') + '>›</button>';
+  }
+
+  /* ---------- render: month ---------- */
+  function renderMonth(){
+    var y = state.year, m = state.month;
+    var firstDow = new Date(y, m - 1, 1).getDay(), dim = daysInMonth(y, m);
+    var wd = '<div class="weekday-row">';
+    WEEKDAYS.forEach(function(w, i){ wd += '<div class="' + (isWeekend(i) ? 'wk' : '') + '">' + w + '</div>'; });
+    wd += '</div>';
+    var grid = '<div class="month-grid">';
+    for (var i = 0; i < firstDow; i++) grid += '<div class="day-cell empty" aria-hidden="true"></div>';
+    for (var d = 1; d <= dim; d++){
+      var dow = new Date(y, m - 1, d).getDay();
+      var sun = calcSun(y, m, d);
+      var isToday = (y === TODAY.y && m === TODAY.m && d === TODAY.d);
+      grid += '<button class="day-cell' + (isWeekend(dow) ? ' wk' : '') + (isToday ? ' today' : '') + '" '
+            + 'style="--s:var(--' + getSeason(m, d) + ')" data-action="open-date" data-value="' + y + '-' + m + '-' + d + '" '
+            + 'aria-label="' + d + ' ' + MONTHS[m - 1] + ' ' + y + ', sunrise ' + timeText(sun.sunriseMin) + ', sunset ' + timeText(sun.sunsetMin) + '. Show Bengali and Hijri dates">'
+            + '<span class="num">' + d + '</span>'
+            + '<span class="t"><span><i class="tri"></i>' + timeHTML(sun.sunriseMin) + '</span><span class="dn-row"><i class="tri dn"></i>' + timeHTML(sun.sunsetMin) + '</span></span>'
+            + '</button>';
+    }
+    grid += '</div>';
+    document.getElementById('viewBody').innerHTML = wd + grid;
+  }
+
+  /* ---------- render: week ---------- */
+  function renderWeek(){
+    var base = new Date(state.year, state.month - 1, state.day);
+    var sunday = new Date(base); sunday.setDate(base.getDate() - base.getDay());
+    var html = '<div class="week-list">';
+    for (var i = 0; i < 7; i++){
+      var d = new Date(sunday); d.setDate(sunday.getDate() + i);
+      var y = d.getFullYear(), m = d.getMonth() + 1, day = d.getDate();
+      var sun = calcSun(y, m, day);
+      var isToday = (y === TODAY.y && m === TODAY.m && day === TODAY.d);
+      html += '<button class="week-row' + (isToday ? ' today' : '') + '" style="--s:var(--' + getSeason(m, day) + ')" '
+            + 'data-action="open-date" data-value="' + y + '-' + m + '-' + day + '">'
+            + '<span class="wd"><span class="dow">' + WEEKDAYS_FULL[d.getDay()] + '</span>' + day + ' ' + MONTHS[m - 1] + ' ' + y + '</span>'
+            + '<span class="val"><i class="tri"></i>' + timeHTML(sun.sunriseMin) + '</span>'
+            + '<span class="val"><i class="tri dn"></i>' + timeHTML(sun.sunsetMin) + '</span>'
+            + '<span class="val len">' + fmtLength(sun.sunriseMin, sun.sunsetMin) + '</span>'
+            + '</button>';
+    }
+    html += '</div>';
+    document.getElementById('viewBody').innerHTML = html;
+  }
+
+  /* ---------- render: day ---------- */
+  function arcSVG(t, dim){
+    t = Math.max(0, Math.min(1, t));
+    var p0 = { x:20, y:100 }, p1 = { x:200, y:-60 }, p2 = { x:380, y:100 };
+    var x = (1-t)*(1-t)*p0.x + 2*(1-t)*t*p1.x + t*t*p2.x;
+    var y = (1-t)*(1-t)*p0.y + 2*(1-t)*t*p1.y + t*t*p2.y;
+    return '<svg viewBox="0 0 400 120" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Sun path from sunrise to sunset">'
+      + '<line class="arc-noon" x1="200" y1="14" x2="200" y2="100"/>'
+      + '<line class="arc-base" x1="8" y1="100" x2="392" y2="100"/>'
+      + '<path class="arc-path" d="M ' + p0.x + ' ' + p0.y + ' Q ' + p1.x + ' ' + p1.y + ' ' + p2.x + ' ' + p2.y + '"/>'
+      + '<g opacity="' + (dim ? .35 : 1) + '"><circle class="arc-halo" cx="' + x + '" cy="' + y + '" r="14"/><circle class="arc-sun" cx="' + x + '" cy="' + y + '" r="8"/></g>'
+      + '</svg>';
+  }
+
+  function renderDay(){
+    var y = state.year, m = state.month, d = state.day;
+    var sun = calcSun(y, m, d), s = SEASON[getSeason(m, d)];
+    var dow = new Date(y, m - 1, d).getDay();
+    var isToday = (y === TODAY.y && m === TODAY.m && d === TODAY.d);
+    var t = 0.5, dim = false;
+    if (isToday){
+      t = (NOW.min - sun.sunriseMin) / (sun.sunsetMin - sun.sunriseMin);
+      dim = t < 0 || t > 1;
+    }
+    var c = calLines(y, m, d);
+    document.getElementById('viewBody').innerHTML =
+        '<div class="day-view" style="--s:var(--' + s.key + ');--on:' + s.on + '">'
+      +   '<div class="day-top"><div>'
+      +     '<div class="day-date">' + d + ' ' + MONTHS[m - 1] + ' ' + y + '</div>'
+      +     '<div class="day-dow">' + WEEKDAYS_FULL[dow] + (isToday ? ' · Today' : '') + '</div></div>'
+      +     '<div class="badge">' + s.en + ' <span class="bn">' + s.bn + '</span></div>'
+      +   '</div>'
+      +   '<div class="arc-wrap">' + arcSVG(t, dim) + '</div>'
+      +   '<div class="stat-row">'
+      +     '<div class="stat"><div class="lbl">Sunrise</div><div class="v">' + timeHTML(sun.sunriseMin) + '</div></div>'
+      +     '<div class="stat"><div class="lbl">Sunset</div><div class="v">' + timeHTML(sun.sunsetMin) + '</div></div>'
+      +     '<div class="stat"><div class="lbl">Daylight</div><div class="v">' + fmtLength(sun.sunriseMin, sun.sunsetMin) + '</div></div>'
+      +     '<div class="stat"><div class="lbl">Solar noon</div><div class="v">' + timeHTML(sun.solarNoon) + '</div></div>'
+      +   '</div>'
+      +   '<div class="cal-strip">'
+      +     '<div class="cal-line"><div class="k">Bengali · বাংলা</div><div class="big">' + c.bnBig + '</div><div class="sm">' + c.bnSm + '</div></div>'
+      +     '<div class="cal-line"><div class="k">Hijri · হিজরি</div><div class="big">' + c.hjBig + '</div><div class="sm">' + c.hjSm + '</div></div>'
+      +   '</div>'
+      + '</div>';
+  }
+
+  function renderView(){
+    renderViewTabs();
+    if (state.view === 'month') renderMonth();
+    else if (state.view === 'week') renderWeek();
+    else renderDay();
+  }
+  function renderAll(){
+    renderTheme();
+    renderYearTabs();
+    renderRing();
+    renderView();
+  }
+
+  /* ---------- date popup ---------- */
+  var dlg = document.getElementById('dateDialog');
+
+  function renderPopup(){
+    var y = state.year, m = state.month, d = state.day;
+    var sun = calcSun(y, m, d), s = SEASON[getSeason(m, d)];
+    var dow = new Date(y, m - 1, d).getDay();
+    var bn = bengaliDate(y, m, d);
+    var c = calLines(y, m, d);
+    var prevOk = inRange(shiftedDate(-1)), nextOk = inRange(shiftedDate(1));
+    var sh = state.hijriShift;
+    dlg.style.setProperty('--s', 'var(--' + s.key + ')');
+    dlg.innerHTML =
+        '<div class="dlg-band"></div>'
+      + '<div class="dlg-head"><div>'
+      +   '<div class="dlg-date" id="dlgTitle">' + d + ' ' + MONTHS[m - 1] + ' ' + y + '</div>'
+      +   '<div class="dlg-dow">' + WEEKDAYS_FULL[dow] + ' · ' + s.en + ' (' + s.bn + ')</div></div>'
+      +   '<button class="x-btn" data-action="close-popup" aria-label="Close">×</button></div>'
+      + '<div class="dlg-block"><div class="k"><span>Bengali date</span><span>' + WEEKDAYS_BN[dow] + '</span></div>'
+      +   '<div class="big">' + c.bnBig + '</div><div class="sm">' + c.bnSm + '</div></div>'
+      + '<div class="dlg-block"><div class="k"><span>Hijri date</span><span>Umm al-Qura</span></div>'
+      +   '<div class="big">' + c.hjBig + '</div><div class="sm">' + c.hjSm + '</div>'
+      +   '<div class="shift"><span class="lbl">Moon sighting differs?</span>'
+      +   '<div class="ctl"><button data-action="hijri-shift" data-value="-1" aria-label="Shift Hijri date back one day"' + (sh <= -1 ? ' disabled' : '') + '>−</button>'
+      +   '<output aria-live="polite">' + (sh > 0 ? '+' + sh : sh) + ' day' + (sh === 1 || sh === -1 ? '' : 's') + '</output>'
+      +   '<button data-action="hijri-shift" data-value="1" aria-label="Shift Hijri date forward one day"' + (sh >= 1 ? ' disabled' : '') + '>+</button></div></div></div>'
+      + '<div class="dlg-sun"><span><i class="tri"></i> ' + timeHTML(sun.sunriseMin) + '</span>'
+      +   '<span><i class="tri dn"></i> ' + timeHTML(sun.sunsetMin) + '</span>'
+      +   '<span class="mut">' + fmtLength(sun.sunriseMin, sun.sunsetMin) + ' daylight</span></div>'
+      + '<div class="dlg-foot">'
+      +   '<button class="nav-btn" data-action="popup-step" data-value="-1" aria-label="Previous day"' + (prevOk ? '' : ' disabled') + '>‹</button>'
+      +   '<button class="link" data-action="open-day">Open day view</button>'
+      +   '<button class="nav-btn" data-action="popup-step" data-value="1" aria-label="Next day"' + (nextOk ? '' : ' disabled') + '>›</button></div>';
+  }
+  function openPopup(){
+    renderPopup();
+    if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+  }
+  function closePopup(){
+    if (dlg.open) { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
+  }
+  dlg.addEventListener('close', function(){
+    var el = document.querySelector('[data-action="open-date"][data-value="' + state.year + '-' + state.month + '-' + state.day + '"]');
+    if (el) el.focus();
+  });
+  dlg.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowLeft') stepPopup(-1);
+    else if (e.key === 'ArrowRight') stepPopup(1);
+  });
+  function stepPopup(delta){
+    var b = shiftedDate(delta);
+    if (!inRange(b)) return;
+    state.year = b.getFullYear(); state.month = b.getMonth() + 1; state.day = b.getDate();
+    renderAll(); renderPopup();
+    var f = dlg.querySelector('[data-action="popup-step"][data-value="' + delta + '"]:not(:disabled)') || dlg.querySelector('.x-btn');
+    if (f) f.focus();
+  }
+
+  /* ---------- interaction ---------- */
+  function go(b){
+    if (!inRange(b)) return;
+    state.year = b.getFullYear(); state.month = b.getMonth() + 1; state.day = b.getDate();
+    renderAll();
+  }
+  document.addEventListener('click', function(e){
+    if (e.target === dlg) { closePopup(); return; }
+    var el = e.target.closest('[data-action]');
+    if (!el) return;
+    var a = el.getAttribute('data-action'), v = el.getAttribute('data-value');
+
+    if (a === 'toggle-theme'){
+      var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('sunalmanac.theme', next); } catch(err){}
+      renderTheme();
+    } else if (a === 'set-year'){
+      state.year = parseInt(v, 10);
+      state.day = clampDay(state.year, state.month, state.day);
+      renderAll();
+    } else if (a === 'set-view'){
+      state.view = v; renderView();
+    } else if (a === 'goto-today'){
+      state.year = TODAY.y; state.month = TODAY.m; state.day = TODAY.d; state.view = 'day';
+      renderAll();
+    } else if (a === 'nav-month'){
+      var t = monthTarget(parseInt(v, 10));
+      go(new Date(t.getFullYear(), t.getMonth(), clampDay(t.getFullYear(), t.getMonth() + 1, state.day)));
+    } else if (a === 'nav-week'){
+      go(shiftedDate(parseInt(v, 10) * 7));
+    } else if (a === 'nav-day'){
+      go(shiftedDate(parseInt(v, 10)));
+    } else if (a === 'open-date'){
+      var p = v.split('-');
+      state.year = +p[0]; state.month = +p[1]; state.day = +p[2];
+      renderAll(); openPopup();
+    } else if (a === 'popup-step'){
+      stepPopup(parseInt(v, 10));
+    } else if (a === 'hijri-shift'){
+      state.hijriShift = Math.max(-1, Math.min(1, state.hijriShift + parseInt(v, 10)));
+      try { localStorage.setItem('sunalmanac.hijriShift', String(state.hijriShift)); } catch(err){}
+      renderPopup(); renderView();
+    } else if (a === 'open-day'){
+      state.view = 'day'; renderAll(); closePopup();
+    } else if (a === 'close-popup'){
+      closePopup();
+    } else if (a === 'car-prev'){
+      stepCarousel(-1);
+    } else if (a === 'car-next'){
+      stepCarousel(1);
+    }
+  });
+
+  buildCarousel();
+  renderAll();
+})();
+</script>
