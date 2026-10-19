@@ -72,12 +72,16 @@
     font-family:var(--f-display);
     font-stretch:125%;
     font-weight:800;
-    font-size:clamp(28px, 6.2vw, 48px);
-    line-height:1;
-    letter-spacing:-.02em;
+    font-size:clamp(20px, 4.4vw, 28px);
+    line-height:1.1;
+    letter-spacing:-.01em;
     text-transform:uppercase;
     text-wrap:balance;
   }
+  .title-row{ display:flex; align-items:center; gap:12px; }
+  .logo{ width:40px; height:40px; flex:none; display:block; background:var(--ink); color:var(--bg); padding:7px; }
+  .logo .disc{ fill:var(--hemanto); }
+  .logo .ln{ fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:square; }
   .coords{ margin-top:10px; font-family:var(--f-mono); font-size:12px; color:var(--dim); }
 
   .theme-btn{
@@ -300,7 +304,10 @@
   <header class="head">
     <div>
       <div class="eyebrow"><span class="bn">সূর্যোদয় ও সূর্যাস্ত</span> · Sun almanac</div>
-      <h1>Bangladesh Sun Almanac</h1>
+      <div class="title-row">
+        <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path class="disc" d="M6 16a6 6 0 0 1 12 0z"/><path class="ln" d="M2 16h20M7 20h10M12 3.5v2.5M4.6 7.4l1.8 1.8M19.4 7.4l-1.8 1.8"/></svg>
+        <h1>Bangladesh Sun Almanac</h1>
+      </div>
       <div class="coords">Times calculated for Dhaka · 23.81° N · 90.41° E · UTC+6</div>
     </div>
     <button class="theme-btn" id="themeBtn" data-action="toggle-theme" aria-label="Switch theme">
