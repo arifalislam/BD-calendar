@@ -26,7 +26,7 @@
 <meta name="twitter:title" content="BD Calendar: sunrise and sunset times in Bangladesh">
 <meta name="twitter:description" content="Daily sunrise and sunset times for Bangladesh (Dhaka) with month, week and day views, Bengali and Hijri dates, and the six seasons (ছয় ঋতু).">
 <meta name="twitter:image" content="https://arifalislam.github.io/BD-calendar/og-image.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "@id": "https://arifalislam.github.io/BD-calendar/#app", "name": "BD Calendar", "url": "https://arifalislam.github.io/BD-calendar/", "description": "Sunrise and sunset time for every day of the previous, current and next year in Bangladesh, calculated for Dhaka, with Bengali and Hijri dates and the six Bengali seasons.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "browserRequirements": "Requires JavaScript", "inLanguage": ["en", "bn"], "isAccessibleForFree": true, "areaServed": {"@type": "Country", "name": "Bangladesh"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "BDT"}}, {"@type": "FAQPage", "@id": "https://arifalislam.github.io/BD-calendar/#faq", "mainEntity": [{"@type": "Question", "name": "What time are sunrise and sunset in Dhaka?", "acceptedAnswer": {"@type": "Answer", "text": "Through the year the sun rises in Dhaka between about 5:11 am and 6:43 am and sets between about 5:11 pm and 6:50 pm. Press Today above to see today's exact sunrise and sunset."}}, {"@type": "Question", "name": "How long are the longest and shortest days in Bangladesh?", "acceptedAnswer": {"@type": "Answer", "text": "In Dhaka the longest day, around 21 June, has about 13 hours 36 minutes of daylight. The shortest, around 22 December, has about 10 hours 40 minutes."}}, {"@type": "Question", "name": "What are the six seasons of Bangladesh?", "acceptedAnswer": {"@type": "Answer", "text": "Bangladesh follows six ritu (seasons) of two Bengali months each: Grishmo (summer), Barsha (monsoon), Sharat (autumn), Hemanto (late autumn), Sheet (winter) and Bosonto (spring)."}}, {"@type": "Question", "name": "When is Pohela Boishakh, the Bengali New Year?", "acceptedAnswer": {"@type": "Answer", "text": "In Bangladesh's revised Bengali calendar, Pohela Boishakh always falls on 14 April. From that day the Bengali year is the Gregorian year minus 593."}}, {"@type": "Question", "name": "Why can the Hijri date differ by a day?", "acceptedAnswer": {"@type": "Answer", "text": "The Hijri date here is calculated with the Umm al-Qura method. Bangladesh sights the new moon locally, so the official date can be one day later. Use the shift control in the date popup to match your local date."}}, {"@type": "Question", "name": "Are these times exact for my district?", "acceptedAnswer": {"@type": "Answer", "text": "Times are calculated for Dhaka (23.81° N, 90.41° E). Places east of Dhaka see the sun a few minutes earlier and places west see it a few minutes later, by up to about 8 minutes across the country."}}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "@id": "https://arifalislam.github.io/BD-calendar/#app", "name": "BD Calendar", "url": "https://arifalislam.github.io/BD-calendar/", "description": "Sunrise and sunset time for every day of the previous, current and next year in Bangladesh, calculated for Dhaka, with Bengali and Hijri dates and the six Bengali seasons.", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "browserRequirements": "Requires JavaScript", "inLanguage": ["en", "bn"], "isAccessibleForFree": true, "areaServed": {"@type": "Country", "name": "Bangladesh"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "BDT"}}, {"@type": "FAQPage", "@id": "https://arifalislam.github.io/BD-calendar/#faq", "mainEntity": [{"@type": "Question", "name": "What time are sunrise and sunset in Dhaka?", "acceptedAnswer": {"@type": "Answer", "text": "Through the year the sun rises in Dhaka between about 5:11 am and 6:43 am and sets between about 5:11 pm and 6:50 pm. Open the Day view to see today's exact sunrise and sunset."}}, {"@type": "Question", "name": "How long are the longest and shortest days in Bangladesh?", "acceptedAnswer": {"@type": "Answer", "text": "In Dhaka the longest day, around 21 June, has about 13 hours 36 minutes of daylight. The shortest, around 22 December, has about 10 hours 40 minutes."}}, {"@type": "Question", "name": "What are the six seasons of Bangladesh?", "acceptedAnswer": {"@type": "Answer", "text": "Bangladesh follows six ritu (seasons) of two Bengali months each: Grishmo (summer), Barsha (monsoon), Sharat (autumn), Hemanto (late autumn), Sheet (winter) and Bosonto (spring)."}}, {"@type": "Question", "name": "When is Pohela Boishakh, the Bengali New Year?", "acceptedAnswer": {"@type": "Answer", "text": "In Bangladesh's revised Bengali calendar, Pohela Boishakh always falls on 14 April. From that day the Bengali year is the Gregorian year minus 593."}}, {"@type": "Question", "name": "Why can the Hijri date differ by a day?", "acceptedAnswer": {"@type": "Answer", "text": "The Hijri date here is calculated with the Umm al-Qura method. Bangladesh sights the new moon locally, so the official date can be one day later. Use the shift control in the date popup to match your local date."}}, {"@type": "Question", "name": "Are these times exact for my district?", "acceptedAnswer": {"@type": "Answer", "text": "Times are calculated for Dhaka (23.81° N, 90.41° E). Places east of Dhaka see the sun a few minutes earlier and places west see it a few minutes later, by up to about 8 minutes across the country."}}]}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Hind+Siliguri:wght@400;500;600;700&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap">
@@ -136,11 +136,6 @@
   .seg button:last-child{ border-right:0; }
   .seg button[aria-pressed="true"]{ background:var(--ink); color:var(--bg); }
   .seg button[aria-pressed="false"]:hover{ background:var(--surface); }
-  .ghost-btn{
-    margin-left:auto; border:2px solid var(--ink); padding:7px 14px;
-    font-family:var(--f-mono); font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
-  }
-  .ghost-btn:hover{ background:var(--ink); color:var(--bg); }
 
   /* ---------- season ring ---------- */
   .ring-block{ margin-bottom:32px; }
@@ -178,14 +173,17 @@
   .track .item{ transition:background-color .25s, color .25s; }
   .track .item.on{ background:var(--s); color:var(--on); outline:2px solid var(--ink); outline-offset:-2px; }
   .item.on .rg{ color:inherit; opacity:.8; }
-  .item .top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
-  .item .tag{ font-family:var(--f-mono); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
+  .item .cols{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:start; }
+  .item .right{ text-align:right; }
+  .item .tag{ display:inline-block; margin-bottom:8px; font-family:var(--f-mono); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
   .item .tag:empty{ display:none; }
   .item.on .tag{ background:var(--on); color:var(--s); padding:3px 7px; }
   .item .bnm{ font-family:var(--f-bn); font-weight:700; font-size:32px; line-height:1.2; }
   .item .nm{ font-family:var(--f-display); font-weight:700; font-size:14px; margin-top:2px; }
-  .item .mo{ font-family:var(--f-bn); font-weight:500; font-size:15px; margin-top:12px; }
-  .item .rg{ font-family:var(--f-mono); font-size:11px; color:var(--dim); margin-top:2px; }
+  .item .mo{ font-family:var(--f-bn); font-weight:600; font-size:17px; line-height:1.45; }
+  .item .rg{ font-family:var(--f-mono); font-size:11px; color:var(--dim); margin-top:8px; }
+  .item .sub{ font-family:var(--f-mono); font-size:11px; color:var(--dim); margin-top:2px; }
+  .item.on .sub{ color:inherit; opacity:.8; }
 
   /* ---------- view row ---------- */
   .view-row{ display:flex; align-items:center; gap:16px; margin-bottom:16px; flex-wrap:wrap; }
@@ -381,7 +379,7 @@
 
   @media (pointer:coarse){
     .nav-btn, .x-btn{ width:44px; height:44px; }
-    .theme-btn, .ghost-btn, .seg button{ min-height:44px; }
+    .theme-btn, .seg button{ min-height:44px; }
     .shift .ctl button{ width:40px; height:40px; }
     .dlg-foot .link{ padding-block:10px; }
   }
@@ -476,7 +474,7 @@
     </div>
     <div class="faq">
       <h2>Frequently asked questions</h2>
-      <details><summary>What time are sunrise and sunset in Dhaka?</summary><p>Through the year the sun rises in Dhaka between about 5:11 am and 6:43 am and sets between about 5:11 pm and 6:50 pm. Press Today above to see today's exact sunrise and sunset.</p></details><details><summary>How long are the longest and shortest days in Bangladesh?</summary><p>In Dhaka the longest day, around 21 June, has about 13 hours 36 minutes of daylight. The shortest, around 22 December, has about 10 hours 40 minutes.</p></details><details><summary>What are the six seasons of Bangladesh?</summary><p>Bangladesh follows six ritu (seasons) of two Bengali months each: Grishmo (summer), Barsha (monsoon), Sharat (autumn), Hemanto (late autumn), Sheet (winter) and Bosonto (spring).</p></details><details><summary>When is Pohela Boishakh, the Bengali New Year?</summary><p>In Bangladesh's revised Bengali calendar, Pohela Boishakh always falls on 14 April. From that day the Bengali year is the Gregorian year minus 593.</p></details><details><summary>Why can the Hijri date differ by a day?</summary><p>The Hijri date here is calculated with the Umm al-Qura method. Bangladesh sights the new moon locally, so the official date can be one day later. Use the shift control in the date popup to match your local date.</p></details><details><summary>Are these times exact for my district?</summary><p>Times are calculated for Dhaka (23.81° N, 90.41° E). Places east of Dhaka see the sun a few minutes earlier and places west see it a few minutes later, by up to about 8 minutes across the country.</p></details>
+      <details><summary>What time are sunrise and sunset in Dhaka?</summary><p>Through the year the sun rises in Dhaka between about 5:11 am and 6:43 am and sets between about 5:11 pm and 6:50 pm. Open the Day view to see today's exact sunrise and sunset.</p></details><details><summary>How long are the longest and shortest days in Bangladesh?</summary><p>In Dhaka the longest day, around 21 June, has about 13 hours 36 minutes of daylight. The shortest, around 22 December, has about 10 hours 40 minutes.</p></details><details><summary>What are the six seasons of Bangladesh?</summary><p>Bangladesh follows six ritu (seasons) of two Bengali months each: Grishmo (summer), Barsha (monsoon), Sharat (autumn), Hemanto (late autumn), Sheet (winter) and Bosonto (spring).</p></details><details><summary>When is Pohela Boishakh, the Bengali New Year?</summary><p>In Bangladesh's revised Bengali calendar, Pohela Boishakh always falls on 14 April. From that day the Bengali year is the Gregorian year minus 593.</p></details><details><summary>Why can the Hijri date differ by a day?</summary><p>The Hijri date here is calculated with the Umm al-Qura method. Bangladesh sights the new moon locally, so the official date can be one day later. Use the shift control in the date popup to match your local date.</p></details><details><summary>Are these times exact for my district?</summary><p>Times are calculated for Dhaka (23.81° N, 90.41° E). Places east of Dhaka see the sun a few minutes earlier and places west see it a few minutes later, by up to about 8 minutes across the country.</p></details>
     </div>
   </section>
   </main>
@@ -685,7 +683,6 @@
       html += '<button data-action="set-year" data-value="' + y + '" aria-pressed="' + (state.year === y) + '">' + y + '</button>';
     });
     html += '</div>';
-    html += '<button class="ghost-btn" data-action="goto-today">Today</button>';
     document.getElementById('yearRow').innerHTML = html;
   }
 
@@ -715,10 +712,11 @@
       SEASONS.forEach(function(s){
         html += '<article class="item" data-season="' + s.key + '"' + (rep !== 1 ? ' aria-hidden="true"' : '')
               + ' style="--s:var(--' + s.key + ');--on:' + s.on + '">'
-              + '<div class="top"><div class="bnm">' + s.bn + '</div><span class="tag"></span></div>'
-              + '<div class="nm">' + s.en + ' \u00b7 ' + s.sub + '</div>'
-              + '<div class="mo">' + SEASON_MONTHS[s.key] + '</div>'
-              + '<div class="rg">' + s.range + '</div></article>';
+              + '<div class="cols"><div class="left"><span class="tag"></span>'
+              + '<div class="mo" lang="bn">' + SEASON_MONTHS[s.key].split(' \u2013 ').join('<br>') + '</div>'
+              + '<div class="rg">' + s.range + '</div></div>'
+              + '<div class="right"><div class="bnm" lang="bn">' + s.bn + '</div>'
+              + '<div class="nm">' + s.en + '</div><div class="sub">' + s.sub + '</div></div></div></article>';
       });
     }
     carTrack.innerHTML = html;
@@ -1048,9 +1046,6 @@
       renderAll();
     } else if (a === 'set-view'){
       state.view = v; renderView();
-    } else if (a === 'goto-today'){
-      state.year = TODAY.y; state.month = TODAY.m; state.day = TODAY.d; state.view = 'day';
-      renderAll();
     } else if (a === 'nav-month'){
       var t = monthTarget(parseInt(v, 10));
       go(new Date(t.getFullYear(), t.getMonth(), clampDay(t.getFullYear(), t.getMonth() + 1, state.day)));
