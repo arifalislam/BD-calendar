@@ -155,6 +155,7 @@
 
   .carousel-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:22px 0 10px; }
   .carousel-head .ttl{ margin:0; font-family:var(--f-mono); font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+  .carousel-head .ttl.ttl-bn{ font-family:var(--f-bn); font-size:19px; font-weight:700; letter-spacing:0; text-transform:none; color:var(--ink); }
   .carousel-head .ttl .bn{ font-family:var(--f-bn); letter-spacing:0; text-transform:none; font-size:14px; margin-left:6px; }
   .car-btns{ display:flex; gap:8px; }
   .track{
@@ -285,6 +286,35 @@
   .cal-line .sm{ font-family:var(--f-mono); font-size:12px; color:var(--dim); margin-top:2px; }
 
   footer{ margin-top:48px; font-family:var(--f-mono); font-size:12px; color:var(--faint); line-height:1.75; max-width:70ch; }
+
+  /* ---------- current season overview + photo slider ---------- */
+  .season-now{ margin-top:36px; background:var(--surface); border-top:6px solid var(--s); padding:22px 20px 24px; }
+  .sn-eyebrow{ font-family:var(--f-bn); font-size:14px; font-weight:600; color:var(--dim); }
+  .season-now h2{ margin:2px 0 0; font-family:var(--f-bn); font-weight:700; font-size:clamp(28px, 5.4vw, 38px); line-height:1.25; }
+  .sn-meta{ margin:4px 0 0; font-family:var(--f-bn); font-size:15px; color:var(--dim); }
+  .sn-text{ margin:14px 0 0; max-width:62ch; font-family:var(--f-bn); font-size:17px; line-height:1.8; }
+  .gal-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:24px 0 10px; }
+  .gal-head h3{ margin:0; font-family:var(--f-bn); font-size:17px; font-weight:700; }
+  .gal-btns{ display:flex; gap:8px; }
+  .gal-track{
+    display:flex; gap:12px; overflow-x:auto; overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory; scrollbar-width:none;
+  }
+  .gal-track::-webkit-scrollbar{ display:none; }
+  .gal-track:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
+  .gal-track figure{ flex:0 0 min(560px, 88%); margin:0; scroll-snap-align:start; min-width:0; }
+  .gal-track .ph{ position:relative; aspect-ratio:16 / 10; overflow:hidden; background:var(--bg); border-bottom:4px solid var(--s); }
+  .gal-track .ph img{ display:block; width:100%; height:100%; object-fit:cover; }
+  .gal-track .ph.broken img{ display:none; }
+  .gal-track .ph.broken::after{
+    content:'ছবিটি এখানে লোড হয়নি। নিচের উৎস লিংক থেকে দেখা যাবে।';
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    padding:16px; text-align:center; font-family:var(--f-bn); font-size:15px; line-height:1.6; color:var(--dim);
+  }
+  .gal-track figcaption{ margin-top:8px; font-size:13px; line-height:1.55; color:var(--dim); }
+  .gal-track .cap-t{ display:block; margin-bottom:2px; font-family:var(--f-bn); font-size:16px; font-weight:600; color:var(--ink); }
+  .gal-track figcaption a{ color:var(--ink); text-underline-offset:2px; overflow-wrap:anywhere; }
+  .gal-track figcaption a:focus-visible{ outline:3px solid var(--focus); outline-offset:2px; }
 
   /* ---------- date popup ---------- */
   dialog{
@@ -434,7 +464,7 @@
     <div class="ring" id="ring" role="img" aria-label="Six Bengali seasons across the selected year"></div>
     <div class="ring-months" id="ringMonths" aria-hidden="true"></div>
     <div class="carousel-head">
-      <h2 class="ttl">Six seasons<span class="bn" lang="bn">ছয় ঋতু</span></h2>
+      <h2 class="ttl ttl-bn" id="carLabel" lang="bn">এখন চলছে ঋতু</h2>
       <div class="car-btns">
         <button class="nav-btn" id="carPrev" data-action="car-prev" aria-label="Previous season">‹</button>
         <button class="nav-btn" id="carNext" data-action="car-next" aria-label="Next season">›</button>
@@ -454,6 +484,8 @@
   </div>
 
   <div id="viewBody"></div>
+
+  <section class="season-now" id="seasonNow" aria-live="polite"></section>
 
   <section class="about" aria-labelledby="about-h">
     <div>
@@ -762,6 +794,97 @@
     }, 140);
   }
 
+  /* ---------- current season overview + photo slider ---------- */
+  var SEASON_INFO = {
+    grishmo:{ dates:'১৪ এপ্রিল – ১৪ জুন', text:'গ্রীষ্ম বছরের সবচেয়ে গরম ঋতু। বৈশাখ ও জ্যৈষ্ঠ মাসে দিন বড় হয়, রোদের তাপ বাড়ে আর বিকেলে হঠাৎ কালবৈশাখী ঝড় আসে। এই সময়ে আম, জাম, কাঁঠাল ও লিচু পাকে, আর গাছে গাছে ফোটে কৃষ্ণচূড়া।' },
+    barsha:{ dates:'১৫ জুন – ১৫ আগস্ট', text:'বর্ষায় থেমে থেমে ভারী বৃষ্টি হয়। নদী-খাল ভরে ওঠে, নিচু জমি পানিতে ডুবে যায় আর বাতাসে আর্দ্রতা বাড়ে। আষাঢ় ও শ্রাবণ মাসজুড়ে বৃষ্টি চলে। এ সময় কদম ও শাপলা ফোটে, নদীতে নৌকাবাইচও হয়।' },
+    sharat:{ dates:'১৬ আগস্ট – ১৫ অক্টোবর', text:'শরতে বৃষ্টি কমে আসে, আকাশ নীল হয় আর সাদা মেঘ ভাসে তুলোর মতো। নদীর ধারে ফোটে কাশফুল, ভোরে ঝরে শিউলি। আশ্বিন মাসে দুর্গাপূজা হয়।' },
+    hemanto:{ dates:'১৬ অক্টোবর – ১৪ ডিসেম্বর', text:'হেমন্তে সকাল-সন্ধ্যায় হালকা শীত পড়ে, ভোরে কুয়াশা জমে। মাঠে আমন ধান পাকে আর অগ্রহায়ণে নবান্ন উৎসবে নতুন চালের পিঠা-পায়েস হয়। এ সময় থেকে দিন ছোট হতে থাকে, সূর্য ওঠে দেরিতে আর অস্ত যায় আগে।' },
+    sheet:{ dates:'১৫ ডিসেম্বর – ১২ ফেব্রুয়ারি', text:'শীত বছরের সবচেয়ে ঠান্ডা ও শুষ্ক ঋতু। পৌষ-মাঘে ঘন কুয়াশা পড়ে, উত্তরাঞ্চলে শীত বেশি। খেজুরের রস আর ভাপা-পুলি পিঠা এ সময়ের বিশেষ আয়োজন। বছরের সবচেয়ে ছোট দিন এই ঋতুতেই আসে, তাই সূর্য ওঠে দেরিতে আর ডোবে তাড়াতাড়ি।' },
+    bosonto:{ dates:'১৩ ফেব্রুয়ারি – ১৩ এপ্রিল', text:'বসন্তে গাছে নতুন পাতা আসে, পলাশ ও শিমুল লালে লাল হয়ে ফোটে। ফাল্গুনের প্রথম দিনে পহেলা ফাল্গুন উদযাপিত হয়, আর বাতাসে বইতে থাকে দক্ষিণা হাওয়া। চৈত্রে তাপ বাড়তে শুরু করে, দিনও আবার বড় হয়ে আসে।' }
+  };
+  /* Wikimedia Commons files; f is the exact file name, t is the Bangla caption */
+  var SEASON_IMG = {
+    grishmo:[
+      { f:'Krishnachura_-_Delonix_regia.jpg', t:'কৃষ্ণচূড়া ফুল' },
+      { f:'Jackfruit_National_fruit_of_Bangladesh.jpg', t:'কাঁঠাল, বাংলাদেশের জাতীয় ফল' },
+      { f:'Fazli_Mango.jpg', t:'ফজলি আম' }
+    ],
+    barsha:[
+      { f:'Boat_Sailing_up_Padma_River_Bangladesh.jpg', t:'পদ্মা নদীতে নৌকা' },
+      { f:'Padma_river_in_Rajshahi_Bangladesh.jpeg', t:'রাজশাহীতে পদ্মা নদী' },
+      { f:'Traditional_Boat_Race,_Brahmanbaria.jpg', t:'ব্রাহ্মণবাড়িয়ায় ঐতিহ্যবাহী নৌকাবাইচ' }
+    ],
+    sharat:[
+      { f:'Kashful_in_Bangladesh.jpg', t:'বাংলাদেশের কাশফুল' },
+      { f:'Kash_Flower_at_the_river_side.jpeg', t:'নদীর ধারে কাশফুল' },
+      { f:'Beautiful_photo_of_kashful_(catkin)_and_sun_as_background.jpg', t:'সূর্যের আলোয় কাশফুল' }
+    ],
+    hemanto:[
+      { f:'A_paddy_field_(rice_field)_in_bangladesh.jpg', t:'বাংলাদেশের ধানখেত' },
+      { f:'Winter_morning_of_Bangladeshi_village.jpg', t:'গ্রামের কুয়াশাঘেরা সকাল' },
+      { f:'ধানক্ষেত.jpg', t:'ধানক্ষেত' }
+    ],
+    sheet:[
+      { f:'Winter_Morning_in_Bangladesh.jpg', t:'বাংলাদেশে শীতের সকাল' },
+      { f:'Khejur_pitha_(2_type).jpg', t:'খেজুর পিঠা' }
+    ],
+    bosonto:[
+      { f:'Palash_(Bengali-_পলাশ)_(2114309323).jpg', t:'পলাশ ফুল' },
+      { f:'Butea_monosperma_-_Palash-flame_of_forest_01.jpg', t:'পলাশ, বনের আগুন' },
+      { f:'Palash_flower_1.jpg', t:'পলাশ ফুলের গুচ্ছ' }
+    ]
+  };
+  var snKey = null;
+
+  function commonsFile(f){ return 'https://commons.wikimedia.org/wiki/File:' + encodeURIComponent(f); }
+  function commonsImg(f){ return 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(f) + '?width=1000'; }
+
+  function renderSeasonNow(key){
+    if (key === snKey) return;
+    snKey = key;
+    var s = SEASON[key], info = SEASON_INFO[key], imgs = SEASON_IMG[key] || [];
+    var el = document.getElementById('seasonNow');
+    el.style.setProperty('--s', 'var(--' + key + ')');
+    var slides = '';
+    imgs.forEach(function(im){
+      var label = im.f.replace(/_/g, ' ');
+      slides += '<figure><div class="ph"><img src="' + commonsImg(im.f) + '" alt="' + im.t + '" loading="lazy" decoding="async" width="1000" height="625"></div>'
+              + '<figcaption><span class="cap-t" lang="bn">' + im.t + '</span>'
+              + '<span lang="bn">ছবির উৎস:</span> <a href="' + commonsFile(im.f) + '" target="_blank" rel="noopener noreferrer">Wikimedia Commons, File:' + label + '</a>'
+              + ' <span lang="bn">(ছবির আলোকচিত্রী ও লাইসেন্স ওই পাতায় দেওয়া আছে)</span></figcaption></figure>';
+    });
+    el.innerHTML =
+        '<div class="sn-eyebrow" lang="bn">ঋতুর পরিচিতি</div>'
+      + '<h2 lang="bn">' + s.bn + ' ঋতু</h2>'
+      + '<p class="sn-meta" lang="bn">' + SEASON_MONTHS[key] + ' · ' + info.dates + '</p>'
+      + '<p class="sn-text" lang="bn">' + info.text + '</p>'
+      + (slides
+        ? '<div class="gal-head"><h3 lang="bn">' + s.bn + ' ঋতুর ছবি</h3><div class="gal-btns">'
+          + '<button class="nav-btn" id="galPrev" data-action="gal-prev" aria-label="আগের ছবি">‹</button>'
+          + '<button class="nav-btn" id="galNext" data-action="gal-next" aria-label="পরের ছবি">›</button></div></div>'
+          + '<div class="gal-track" id="galTrack" tabindex="0" role="group" aria-roledescription="carousel" aria-label="' + s.bn + ' ঋতুর ছবি">' + slides + '</div>'
+        : '');
+    var track = document.getElementById('galTrack');
+    if (track){
+      track.querySelectorAll('img').forEach(function(img){
+        img.addEventListener('error', function(){ img.parentNode.classList.add('broken'); });
+      });
+      track.addEventListener('scroll', syncGal, { passive:true });
+      syncGal();
+    }
+  }
+  function syncGal(){
+    var t = document.getElementById('galTrack'); if (!t) return;
+    document.getElementById('galPrev').disabled = t.scrollLeft <= 2;
+    document.getElementById('galNext').disabled = t.scrollLeft >= t.scrollWidth - t.clientWidth - 2;
+  }
+  function stepGal(dir){
+    var t = document.getElementById('galTrack'); if (!t) return;
+    var f = t.querySelector('figure'); if (!f) return;
+    t.scrollBy({ left: dir * (f.offsetWidth + 12), behavior: reduceMotion ? 'auto' : 'smooth' });
+  }
+
   function updateCarousel(cur){
     var isToday = (state.year === TODAY.y && state.month === TODAY.m && state.day === TODAY.d);
     carItems.forEach(function(el){
@@ -769,6 +892,8 @@
       el.classList.toggle('on', on);
       el.querySelector('.tag').textContent = on ? (isToday ? 'Now' : 'Selected') : '';
     });
+    document.getElementById('carLabel').textContent = (isToday ? '\u098f\u0996\u09a8 \u099a\u09b2\u099b\u09c7 ' : '\u09a8\u09bf\u09b0\u09cd\u09ac\u09be\u099a\u09bf\u09a4 \u09a4\u09be\u09b0\u09bf\u0996\u09c7 \u099a\u09b2\u099b\u09c7 ') + SEASON[cur].bn + ' \u098b\u09a4\u09c1';
+    renderSeasonNow(cur);
     if (cur !== carCur){
       carCur = cur;
       centerOn(cur, carFirst || reduceMotion ? 'auto' : 'smooth', carFirst);
@@ -1077,6 +1202,10 @@
       stepCarousel(-1);
     } else if (a === 'car-next'){
       stepCarousel(1);
+    } else if (a === 'gal-prev'){
+      stepGal(-1);
+    } else if (a === 'gal-next'){
+      stepGal(1);
     }
   });
 
