@@ -291,20 +291,37 @@
 
   /* ---------- date popup ---------- */
   dialog{
-    width:min(460px, calc(100vw - 32px)); max-height:calc(100dvh - 32px); overflow:auto;
-    margin:auto; padding:0; border:2px solid var(--ink); background:var(--bg); color:var(--ink);
+    position:fixed; inset:auto 0 0 0; width:100%; max-width:none; max-height:min(92dvh, 760px);
+    margin:0; overflow:auto; overscroll-behavior:contain;
+    padding:0 max(16px, calc((100% - 920px) / 2)) env(safe-area-inset-bottom, 0px);
+    border:0; border-top:10px solid var(--s); background:var(--bg); color:var(--ink);
+    box-shadow:0 -14px 44px rgba(5,6,10,.3);
+  }
+  dialog[open]{ display:grid; grid-template-columns:minmax(0,1fr); }
+  @media (min-width:720px){
+    dialog[open]{ grid-template-columns:repeat(2, minmax(0,1fr)); column-gap:40px; }
+    dialog[open] > .dlg-head, dialog[open] > .dlg-sun, dialog[open] > .dlg-foot{ grid-column:1 / -1; }
   }
   dialog::backdrop{ background:rgba(5,6,10,.6); }
-  dialog[open]{ animation:pop .16s ease-out; }
-  @keyframes pop{ from{ transform:translateY(8px); opacity:0; } to{ transform:none; opacity:1; } }
-  .dlg-band{ height:10px; background:var(--s); }
-  .dlg-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:18px 20px 4px; }
+  dialog[open]{ animation:drawer-in .42s cubic-bezier(.22,1,.36,1) both; }
+  dialog[open]::backdrop{ animation:veil-in .3s ease both; }
+  dialog.closing{ animation:drawer-out .28s cubic-bezier(.5,0,.9,.4) both; }
+  dialog.closing::backdrop{ animation:veil-out .28s ease both; }
+  @keyframes drawer-in{ from{ transform:translateY(100%); } to{ transform:translateY(0); } }
+  @keyframes drawer-out{ from{ transform:translateY(0); } to{ transform:translateY(100%); } }
+  @keyframes veil-in{ from{ opacity:0; } to{ opacity:1; } }
+  @keyframes veil-out{ from{ opacity:1; } to{ opacity:0; } }
+  @media (prefers-reduced-motion: reduce){
+    dialog[open], dialog[open]::backdrop, dialog.closing, dialog.closing::backdrop{ animation:none !important; }
+  }
+  html:has(dialog[open]){ overflow:hidden; }
+  .dlg-band{ display:none; }
+  .dlg-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:20px 0 4px; }
   .dlg-date{ font-family:var(--f-display); font-stretch:112%; font-weight:800; font-size:24px; line-height:1.1; letter-spacing:-.01em; }
   .dlg-dow{ font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--dim); margin-top:6px; }
   .x-btn{ width:34px; height:34px; border:2px solid var(--ink); font-size:18px; line-height:1; flex:none; }
   .x-btn:hover{ background:var(--ink); color:var(--bg); }
-  .dlg-block{ padding:16px 20px; border-top:1px solid var(--line); margin-top:14px; }
-  .dlg-block:first-of-type{ margin-top:12px; }
+  .dlg-block{ padding:16px 0; border-top:1px solid var(--line); margin-top:12px; }
   .dlg-block .k{ display:flex; justify-content:space-between; gap:8px; font-family:var(--f-mono); font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
   .dlg-block .big{ font-family:var(--f-bn); font-weight:700; font-size:30px; line-height:1.25; margin-top:4px; }
   .dlg-block .sm{ font-family:var(--f-mono); font-size:12px; color:var(--dim); margin-top:4px; }
@@ -314,10 +331,10 @@
   .shift .ctl button{ width:30px; height:28px; font-family:var(--f-mono); font-weight:700; font-size:15px; }
   .shift .ctl button:hover:not(:disabled){ background:var(--ink); color:var(--bg); }
   .shift .ctl output{ min-width:62px; text-align:center; font-family:var(--f-mono); font-size:12px; font-weight:600; border-inline:2px solid var(--ink); line-height:24px; }
-  .dlg-sun{ display:flex; gap:22px; flex-wrap:wrap; padding:14px 20px; background:var(--surface); font-family:var(--f-mono); font-size:13px; font-weight:500; }
+  .dlg-sun{ display:flex; gap:22px; flex-wrap:wrap; padding:14px 16px; background:var(--surface); font-family:var(--f-mono); font-size:13px; font-weight:500; }
   .dlg-sun small{ font-size:.78em; opacity:.7; margin-left:2px; }
   .dlg-sun .mut{ color:var(--dim); }
-  .dlg-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 20px 18px; }
+  .dlg-foot{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 0 18px; }
   .dlg-foot .link{ font-family:var(--f-mono); font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; border-bottom:2px solid var(--ink); padding-bottom:2px; }
   .dlg-foot .link:hover{ background:var(--ink); color:var(--bg); }
 
@@ -966,9 +983,23 @@
     renderPopup();
     if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
   }
-  function closePopup(){
+  function finishClose(){
+    dlg.classList.remove('closing');
     if (dlg.open) { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); }
   }
+  function closePopup(){
+    if (!dlg.open || dlg.classList.contains('closing')) return;
+    var quiet = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (quiet) { finishClose(); return; }
+    dlg.classList.add('closing');
+    dlg.addEventListener('animationend', function h(e){
+      if (e.target !== dlg) return;
+      dlg.removeEventListener('animationend', h);
+      finishClose();
+    });
+    setTimeout(function(){ if (dlg.classList.contains('closing')) finishClose(); }, 450);
+  }
+  dlg.addEventListener('cancel', function(e){ e.preventDefault(); closePopup(); });
   dlg.addEventListener('close', function(){
     var el = document.querySelector('[data-action="open-date"][data-value="' + state.year + '-' + state.month + '-' + state.day + '"]');
     if (el) el.focus();
@@ -993,7 +1024,11 @@
     renderAll();
   }
   document.addEventListener('click', function(e){
-    if (e.target === dlg) { closePopup(); return; }
+    if (e.target === dlg) {
+      var r = dlg.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) closePopup();
+      return;
+    }
     var el = e.target.closest('[data-action]');
     if (!el) return;
     var a = el.getAttribute('data-action'), v = el.getAttribute('data-value');
