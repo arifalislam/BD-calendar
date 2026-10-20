@@ -173,17 +173,14 @@
   .track .item{ transition:background-color .25s, color .25s; }
   .track .item.on{ background:var(--s); color:var(--on); outline:2px solid var(--ink); outline-offset:-2px; }
   .item.on .rg{ color:inherit; opacity:.8; }
-  .item .cols{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:start; }
-  .item .right{ text-align:right; }
-  .item .tag{ display:inline-block; margin-bottom:8px; font-family:var(--f-mono); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
+  .item .top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .item .tag{ font-family:var(--f-mono); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
   .item .tag:empty{ display:none; }
   .item.on .tag{ background:var(--on); color:var(--s); padding:3px 7px; }
-  .item .bnm{ font-family:var(--f-bn); font-weight:700; font-size:32px; line-height:1.2; }
-  .item .nm{ font-family:var(--f-display); font-weight:700; font-size:14px; margin-top:2px; }
-  .item .mo{ font-family:var(--f-bn); font-weight:600; font-size:17px; line-height:1.45; }
-  .item .rg{ font-family:var(--f-mono); font-size:11px; color:var(--dim); margin-top:8px; }
-  .item .sub{ font-family:var(--f-mono); font-size:11px; color:var(--dim); margin-top:2px; }
-  .item.on .sub{ color:inherit; opacity:.8; }
+  .item .bnm{ font-family:var(--f-bn); font-weight:700; font-size:26px; line-height:1.25; }
+  .item .nm{ font-family:var(--f-display); font-weight:700; font-size:13px; margin-top:2px; }
+  .item .mo{ font-family:var(--f-bn); font-weight:500; font-size:15px; margin-top:12px; }
+  .item .rg{ font-family:var(--f-mono); font-size:11px; color:var(--dim); margin-top:2px; }
 
   /* ---------- view row ---------- */
   .view-row{ display:flex; align-items:center; gap:16px; margin-bottom:16px; flex-wrap:wrap; }
@@ -712,11 +709,10 @@
       SEASONS.forEach(function(s){
         html += '<article class="item" data-season="' + s.key + '"' + (rep !== 1 ? ' aria-hidden="true"' : '')
               + ' style="--s:var(--' + s.key + ');--on:' + s.on + '">'
-              + '<div class="cols"><div class="left"><span class="tag"></span>'
-              + '<div class="mo" lang="bn">' + SEASON_MONTHS[s.key].split(' \u2013 ').join('<br>') + '</div>'
-              + '<div class="rg">' + s.range + '</div></div>'
-              + '<div class="right"><div class="bnm" lang="bn">' + s.bn + '</div>'
-              + '<div class="nm">' + s.en + '</div><div class="sub">' + s.sub + '</div></div></div></article>';
+              + '<div class="top"><div class="bnm" lang="bn">' + s.bn + '</div><span class="tag"></span></div>'
+              + '<div class="nm">' + s.en + ' \u00b7 ' + s.sub + '</div>'
+              + '<div class="mo" lang="bn">' + SEASON_MONTHS[s.key] + '</div>'
+              + '<div class="rg">' + s.range + '</div></article>';
       });
     }
     carTrack.innerHTML = html;
