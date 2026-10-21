@@ -136,7 +136,8 @@
   .seg button[aria-pressed="false"]:hover{ background:var(--surface); }
 
   /* ---------- season ring ---------- */
-  .ring-block{ margin-bottom:32px; }
+  .ring-block{ margin-bottom:28px; }
+  .car-block{ margin-top:36px; }
   .ring{ position:relative; display:flex; height:40px; }
   .ring-seg{ display:flex; align-items:center; justify-content:center; min-width:0; overflow:hidden; }
   .ring-seg .k{ font-family:var(--f-bn); font-size:16px; font-weight:700; white-space:nowrap; }
@@ -153,7 +154,7 @@
   .ring-months .ml{ display:none; }
   @media (min-width:640px){ .ring-months .ml{ display:inline; } .ring-months .mn{ display:none; } }
 
-  .carousel-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:22px 0 10px; }
+  .carousel-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 10px; }
   .carousel-head .ttl{ margin:0; font-family:var(--f-mono); font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
   .carousel-head .ttl.ttl-bn{ font-family:var(--f-bn); font-size:19px; font-weight:700; letter-spacing:0; text-transform:none; color:var(--ink); }
   .carousel-head .ttl .bn{ font-family:var(--f-bn); letter-spacing:0; text-transform:none; font-size:14px; margin-left:6px; }
@@ -510,14 +511,6 @@
   <div class="ring-block">
     <div class="ring" id="ring" role="img" aria-label="নির্বাচিত বছরজুড়ে ছয় বাংলা ঋতু"></div>
     <div class="ring-months" id="ringMonths" aria-hidden="true"></div>
-    <div class="carousel-head">
-      <h2 class="ttl ttl-bn" id="carLabel" lang="bn"></h2>
-      <div class="car-btns">
-        <button class="nav-btn" id="carPrev" data-action="car-prev" aria-label="আগের ঋতু">‹</button>
-        <button class="nav-btn" id="carNext" data-action="car-next" aria-label="পরের ঋতু">›</button>
-      </div>
-    </div>
-    <div class="track" id="legend" tabindex="0" role="group" aria-roledescription="carousel" aria-label="ছয় বাংলা ঋতু"></div>
   </div>
 
   <h2 class="sr-only">সূর্যোদয় ও সূর্যাস্তের ক্যালেন্ডার</h2>
@@ -531,6 +524,17 @@
   </div>
 
   <div id="viewBody"></div>
+
+  <div class="car-block">
+  <div class="carousel-head">
+    <h2 class="ttl ttl-bn" id="carLabel" lang="bn"></h2>
+    <div class="car-btns">
+      <button class="nav-btn" id="carPrev" data-action="car-prev" aria-label="আগের ঋতু">‹</button>
+      <button class="nav-btn" id="carNext" data-action="car-next" aria-label="পরের ঋতু">›</button>
+    </div>
+  </div>
+  <div class="track" id="legend" tabindex="0" role="group" aria-roledescription="carousel" aria-label="ছয় বাংলা ঋতু"></div>
+  </div>
 
   <section class="season-now" id="seasonNow" aria-live="polite"></section>
 
@@ -616,7 +620,7 @@
 
   var HJ_BN = ['মুহাররম','সফর','রবিউল আউয়াল','রবিউস সানি','জমাদিউল আউয়াল','জমাদিউস সানি','রজব','শাবান','রমজান','শাওয়াল','জিলকদ','জিলহজ'];
 
-  var state = { year:CUR_YEAR, month:TODAY.m, day:TODAY.d, view:'month', hijriShift:0 };
+  var state = { year:CUR_YEAR, month:TODAY.m, day:TODAY.d, view:'day', hijriShift:0 };
   try {
     var hs = parseInt(localStorage.getItem('sunalmanac.hijriShift'), 10);
     if (hs === -1 || hs === 0 || hs === 1) state.hijriShift = hs;
