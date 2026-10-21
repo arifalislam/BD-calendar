@@ -933,8 +933,9 @@
       el.classList.toggle('on', on);
       el.querySelector('.tag').textContent = on ? (isToday ? 'এখন' : 'নির্বাচিত') : '';
     });
-    var bd = calLines(state.year, state.month, state.day);
-    document.getElementById('carLabel').textContent = bd.bnBig + ' · ' + SEASON[cur].bn + 'কাল';
+    var ORD = ['১ম','২য়','৩য়','৪র্থ','৫ম','৬ষ্ঠ'], idx = 0;
+    SEASONS.forEach(function(s, i){ if (s.key === cur) idx = i; });
+    document.getElementById('carLabel').textContent = (isToday ? 'এখন চলছে ' : 'নির্বাচিত তারিখে চলছে ') + ORD[idx] + ' ঋতু ' + SEASON[cur].bn + 'কাল';
     renderSeasonNow(cur);
     if (cur !== carCur){
       carCur = cur;
