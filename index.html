@@ -893,14 +893,14 @@
     });
     el.innerHTML =
         '<div class="sn-eyebrow" lang="bn">ঋতুর পরিচিতি</div>'
-      + '<h2 lang="bn">' + s.bn + ' ঋতু</h2>'
+      + '<h2 lang="bn">' + s.bn + 'কাল</h2>'
       + '<p class="sn-meta" lang="bn">' + SEASON_MONTHS[key] + ' · ' + info.dates + '</p>'
       + '<p class="sn-text" lang="bn">' + info.text + '</p>'
       + (slides
-        ? '<div class="gal-head"><h3 lang="bn">' + s.bn + ' ঋতুর ছবি</h3><div class="gal-btns">'
+        ? '<div class="gal-head"><h3 lang="bn">' + s.bn + 'কালের ছবি</h3><div class="gal-btns">'
           + '<button class="nav-btn" id="galPrev" data-action="gal-prev" aria-label="আগের ছবি">‹</button>'
           + '<button class="nav-btn" id="galNext" data-action="gal-next" aria-label="পরের ছবি">›</button></div></div>'
-          + '<div class="gal-track" id="galTrack" tabindex="0" role="group" aria-roledescription="carousel" aria-label="' + s.bn + ' ঋতুর ছবি">' + slides + '</div>'
+          + '<div class="gal-track" id="galTrack" tabindex="0" role="group" aria-roledescription="carousel" aria-label="' + s.bn + 'কালের ছবি">' + slides + '</div>'
         : '');
     var track = document.getElementById('galTrack');
     if (track){
@@ -930,7 +930,7 @@
       el.querySelector('.tag').textContent = on ? (isToday ? 'এখন' : 'নির্বাচিত') : '';
     });
     var bd = calLines(state.year, state.month, state.day);
-    document.getElementById('carLabel').textContent = bd.bnBig + ' · ' + SEASON[cur].bn + ' ঋতু';
+    document.getElementById('carLabel').textContent = bd.bnBig + ' · ' + SEASON[cur].bn + 'কাল';
     renderSeasonNow(cur);
     if (cur !== carCur){
       carCur = cur;
@@ -1087,7 +1087,7 @@
       +   '<div class="day-top"><div>'
       +     '<div class="day-date">' + bnNum(d) + ' ' + MONTHS[m - 1] + ' ' + bnNum(y) + '</div>'
       +     '<div class="day-dow">' + WEEKDAYS_FULL[dow] + (isToday ? ' · আজ' : '') + '</div></div>'
-      +     '<div class="badge">' + s.bn + ' ঋতু</div>'
+      +     '<div class="badge">' + s.bn + 'কাল</div>'
       +   '</div>'
       +   '<div class="arc-wrap">' + arcSVG(t, dim) + '</div>'
       +   '<div class="stat-row">'
@@ -1131,7 +1131,7 @@
         '<div class="dlg-band"></div>'
       + '<div class="dlg-head"><div>'
       +   '<div class="dlg-date" id="dlgTitle">' + bnNum(d) + ' ' + MONTHS[m - 1] + ' ' + bnNum(y) + '</div>'
-      +   '<div class="dlg-dow">' + WEEKDAYS_FULL[dow] + ' · ' + s.bn + ' ঋতু</div></div>'
+      +   '<div class="dlg-dow">' + WEEKDAYS_FULL[dow] + ' · ' + s.bn + 'কাল</div></div>'
       +   '<button class="x-btn" data-action="close-popup" aria-label="বন্ধ করুন">×</button></div>'
       + '<div class="dlg-block"><div class="k"><span>বাংলা তারিখ</span><span>' + WEEKDAYS_BN[dow] + '</span></div>'
       +   '<div class="big">' + c.bnBig + '</div></div>'
