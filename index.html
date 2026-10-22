@@ -29,7 +29,7 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "@id": "https://arifalislam.github.io/BD-calendar/#app", "name": "BD Sun Almanac", "alternateName": "বিডি সান অ্যালমানাক", "url": "https://arifalislam.github.io/BD-calendar/", "description": "ঢাকার অবস্থান ধরে বাংলাদেশের আগের, চলতি ও পরের বছরের প্রতিদিনের সূর্যোদয় ও সূর্যাস্তের সময়, বাংলা ও হিজরি তারিখ এবং ছয় ঋতু।", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "browserRequirements": "জাভাস্ক্রিপ্ট প্রয়োজন", "inLanguage": "bn", "isAccessibleForFree": true, "areaServed": {"@type": "Country", "name": "বাংলাদেশ"}, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "BDT"}}, {"@type": "FAQPage", "@id": "https://arifalislam.github.io/BD-calendar/#faq", "inLanguage": "bn", "mainEntity": [{"@type": "Question", "name": "ঢাকায় সূর্যোদয় ও সূর্যাস্ত কয়টায় হয়?", "acceptedAnswer": {"@type": "Answer", "text": "সারা বছরে ঢাকায় সূর্য ওঠে প্রায় ৫:১১ এএম থেকে ৬:৪৩ এএমের মধ্যে, আর অস্ত যায় প্রায় ৫:১১ পিএম থেকে ৬:৫০ পিএমের মধ্যে। আজকের সঠিক সময় দেখতে \"দিন\" ভিউ খুলুন।"}}, {"@type": "Question", "name": "বাংলাদেশে সবচেয়ে বড় ও সবচেয়ে ছোট দিন কত ঘণ্টার?", "acceptedAnswer": {"@type": "Answer", "text": "ঢাকায় সবচেয়ে বড় দিন প্রায় ২১ জুন, তখন দিনের দৈর্ঘ্য প্রায় ১৩ ঘণ্টা ৩৬ মিনিট। সবচেয়ে ছোট দিন প্রায় ২২ ডিসেম্বর, তখন প্রায় ১০ ঘণ্টা ৪০ মিনিট।"}}, {"@type": "Question", "name": "বাংলাদেশের ছয় ঋতু কী কী?", "acceptedAnswer": {"@type": "Answer", "text": "বাংলাদেশে ছয়টি ঋতু, প্রতিটি দুই বাংলা মাসের: গ্রীষ্ম, বর্ষা, শরৎ, হেমন্ত, শীত ও বসন্ত।"}}, {"@type": "Question", "name": "পহেলা বৈশাখ কবে?", "acceptedAnswer": {"@type": "Answer", "text": "বাংলাদেশের সংশোধিত বাংলা পঞ্জিকায় পহেলা বৈশাখ প্রতিবছর ১৪ এপ্রিল। ওই দিন থেকে বাংলা সন হয় ইংরেজি সন থেকে ৫৯৩ বছর কম।"}}, {"@type": "Question", "name": "হিজরি তারিখ কেন একদিন আলাদা হতে পারে?", "acceptedAnswer": {"@type": "Answer", "text": "এখানে হিজরি তারিখ উম্মুল কুরা পদ্ধতিতে হিসাব করা। বাংলাদেশে নতুন চাঁদ স্থানীয়ভাবে দেখা হয়, তাই সরকারি তারিখ এক দিন পরে হতে পারে। তারিখের প্যানেলে সমন্বয়ের বোতাম দিয়ে নিজের এলাকার তারিখ মিলিয়ে নিন।"}}, {"@type": "Question", "name": "আমার জেলার জন্য কি এই সময় ঠিক?", "acceptedAnswer": {"@type": "Answer", "text": "সময়গুলো ঢাকার (২৩.৮১° উত্তর, ৯০.৪১° পূর্ব) জন্য হিসাব করা। ঢাকার পূর্ব দিকের এলাকায় সূর্য কয়েক মিনিট আগে ওঠে, পশ্চিম দিকে কয়েক মিনিট পরে; পুরো দেশে ফারাক সর্বোচ্চ প্রায় ৮ মিনিট।"}}]}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Anek+Bangla:wght@400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Noto+Sans+Bengali:wght@400..800&family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..700&display=swap">
 <style>
   /* Layout: one 960px column. Header + theme toggle, year switch, six-season year ring,
      Day / Week / Month tabs, content area, date popup (Bengali + Hijri). */
@@ -49,10 +49,10 @@
     --hemanto:#ff6a00;
     --sheet:#8b5cf6;
 
-    --f-display:'Archivo','Anek Bangla',system-ui,sans-serif;
-    --f-body:'Instrument Sans','Anek Bangla',system-ui,sans-serif;
-    --f-mono:'JetBrains Mono','Anek Bangla',ui-monospace,monospace;
-    --f-bn:'Anek Bangla','Noto Sans Bengali',system-ui,sans-serif;
+    --f-display:'Archivo','Noto Sans Bengali',system-ui,sans-serif;
+    --f-body:'Instrument Sans','Noto Sans Bengali',system-ui,sans-serif;
+    --f-mono:'JetBrains Mono','Noto Sans Bengali',ui-monospace,monospace;
+    --f-bn:'Noto Sans Bengali','Noto Sans Bengali',system-ui,sans-serif;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
@@ -417,7 +417,7 @@
   }
   /* ---------- Bangla typography: no tracking (it breaks conjuncts), slightly larger small text ---------- */
   html[lang="bn"] body *{ letter-spacing:0; }
-  html[lang="bn"]{ --f-mono:'JetBrains Mono','Anek Bangla','Noto Sans Bengali',ui-monospace,monospace; }
+  html[lang="bn"]{ --f-mono:'JetBrains Mono','Noto Sans Bengali','Noto Sans Bengali',ui-monospace,monospace; }
   html[lang="bn"] body{ line-height:1.5; }
   html[lang="bn"] .eyebrow{ font-family:var(--f-bn); font-size:15px; font-weight:600; }
   html[lang="bn"] .coords{ font-family:var(--f-bn); font-size:14px; }
@@ -849,31 +849,44 @@
   var SEASON_IMG = {
     grishmo:[
       { f:'Krishnachura_-_Delonix_regia.jpg', t:'কৃষ্ণচূড়া ফুল' },
+      { site:'Unsplash', u:'photo-1689899148821-71705bd9ab56', by:'SAMIUL ITM', page:'https://unsplash.com/photos/MHi3XoipH6Q', t:'গাছে পাকা আম' },
       { f:'Jackfruit_National_fruit_of_Bangladesh.jpg', t:'কাঁঠাল, বাংলাদেশের জাতীয় ফল' },
+      { site:'Unsplash', u:'photo-1719153350959-ac620f476254', by:'Masum Billah Joy', page:'https://unsplash.com/photos/Xlk2unjOpZs', t:'মধুমালতী ফুল, সাভার' },
       { f:'Fazli_Mango.jpg', t:'ফজলি আম' }
     ],
     barsha:[
       { f:'Boat_Sailing_up_Padma_River_Bangladesh.jpg', t:'পদ্মা নদীতে নৌকা' },
+      { site:'Unsplash', u:'photo-1670930371984-d8f47ec55d87', by:'Jaman Asad', page:'https://unsplash.com/photos/nKKsnAlLLrw', t:'শাপলা বিল, ডিবির হাওর, সিলেট' },
       { f:'Padma_river_in_Rajshahi_Bangladesh.jpeg', t:'রাজশাহীতে পদ্মা নদী' },
+      { site:'Unsplash', u:'photo-1731010228077-6aa0c7b69cb7', by:'Jaman Asad', page:'https://unsplash.com/photos/dtakVykzPAE', t:'নদীর তীরে গ্রামের খড়ের ঘর' },
       { f:'Traditional_Boat_Race,_Brahmanbaria.jpg', t:'ব্রাহ্মণবাড়িয়ায় ঐতিহ্যবাহী নৌকাবাইচ' }
     ],
     sharat:[
       { f:'Kashful_in_Bangladesh.jpg', t:'বাংলাদেশের কাশফুল' },
+      { site:'Unsplash', u:'photo-1633441732220-b0de613be1d3', by:'Rejaul Karim', page:'https://unsplash.com/photos/7IQMIILNJDI', t:'সূর্যাস্তের আলোয় কাশফুল' },
       { f:'Kash_Flower_at_the_river_side.jpeg', t:'নদীর ধারে কাশফুল' },
+      { site:'Unsplash', u:'photo-1702286442781-4c191afa6f8d', by:'Pijus Ghosh', page:'https://unsplash.com/photos/k7-WOyiX6gM', t:'কাশফুল, রাজারহাট, কলকাতা' },
       { f:'Beautiful_photo_of_kashful_(catkin)_and_sun_as_background.jpg', t:'সূর্যের আলোয় কাশফুল' }
     ],
     hemanto:[
       { f:'A_paddy_field_(rice_field)_in_bangladesh.jpg', t:'বাংলাদেশের ধানখেত' },
+      { site:'Unsplash', u:'photo-1679029524057-7065d479da5c', by:'Sabbir Hossen', page:'https://unsplash.com/photos/aca64kSojkE', t:'ধানখেতের ওপর সূর্যাস্ত, পাঁচদোনা, নরসিংদী' },
       { f:'Winter_morning_of_Bangladeshi_village.jpg', t:'গ্রামের কুয়াশাঘেরা সকাল' },
+      { site:'Unsplash', u:'photo-1642832520839-a30ac9bcadd9', by:'Shaikhul Imran', page:'https://unsplash.com/photos/WdHqUHs94Yo', t:'ধানখেতের মাঝে ছোট কুটির, যশোর' },
       { f:'ধানক্ষেত.jpg', t:'ধানক্ষেত' }
     ],
     sheet:[
       { f:'Winter_Morning_in_Bangladesh.jpg', t:'বাংলাদেশে শীতের সকাল' },
-      { f:'Khejur_pitha_(2_type).jpg', t:'খেজুর পিঠা' }
+      { site:'Unsplash', u:'photo-1739459156974-57929fe4ed4a', by:'Rokon Uddin', page:'https://unsplash.com/photos/mzE2dxRv63A', t:'হলুদ ফুলে ভরা গ্রামের মাঠ' },
+      { f:'Khejur_pitha_(2_type).jpg', t:'খেজুর পিঠা' },
+      { site:'Unsplash', u:'photo-1644101211459-7f9be46fad04', by:'Shad Arefin Sanchoy', page:'https://unsplash.com/photos/AbIiPjvu5z0', t:'সরিষাখেতে কৃষক' },
+      { site:'Unsplash', u:'photo-1713931750497-1428b117158b', by:'Shahriar Bayezid', page:'https://unsplash.com/photos/IeL4kDu3SmA', t:'হলুদ ফুলের মাঠে বড় গাছ, সিরাজগঞ্জ' }
     ],
     bosonto:[
       { f:'Palash_(Bengali-_পলাশ)_(2114309323).jpg', t:'পলাশ ফুল' },
+      { site:'Pexels', pid:'11562252', by:'Nahidul Islam Choyon', page:'https://www.pexels.com/photo/blue-sky-over-shimul-trees-11562252/', t:'সুনামগঞ্জে শিমুল গাছের লাল ফুল' },
       { f:'Butea_monosperma_-_Palash-flame_of_forest_01.jpg', t:'পলাশ, বনের আগুন' },
+      { site:'Pexels', pid:'15734111', by:'Biplab Sau', page:'https://www.pexels.com/photo/palash-tree-with-lush-blooming-red-flowers-15734111/', t:'লালে লাল ফুলে ভরা পলাশ গাছ' },
       { f:'Palash_flower_1.jpg', t:'পলাশ ফুলের গুচ্ছ' }
     ]
   };
@@ -890,10 +903,24 @@
     el.style.setProperty('--s', 'var(--' + key + ')');
     var slides = '';
     imgs.forEach(function(im){
-      slides += '<figure><div class="ph"><img src="' + commonsImg(im.f) + '" alt="' + im.t + '" loading="lazy" decoding="async" width="1000" height="625"></div>'
+      var src, href, srcHTML;
+      if (im.site === 'Unsplash'){
+        src = 'https://images.unsplash.com/' + im.u + '?w=1000&q=70&auto=format&fit=crop';
+        href = im.page;
+        srcHTML = '<a href="' + href + '" target="_blank" rel="noopener noreferrer">Unsplash, ' + im.by + '</a> <span lang="bn">(Unsplash লাইসেন্সে ব্যবহার করা)</span>';
+      } else if (im.site === 'Pexels'){
+        src = 'https://images.pexels.com/photos/' + im.pid + '/pexels-photo-' + im.pid + '.jpeg?auto=compress&cs=tinysrgb&w=1000';
+        href = im.page;
+        srcHTML = '<a href="' + href + '" target="_blank" rel="noopener noreferrer">Pexels, ' + im.by + '</a> <span lang="bn">(Pexels লাইসেন্সে ব্যবহার করা)</span>';
+      } else {
+        src = commonsImg(im.f);
+        href = commonsFile(im.f);
+        srcHTML = '<a href="' + href + '" target="_blank" rel="noopener noreferrer" title="উইকিমিডিয়া কমন্সে ছবির মূল পাতা খুলুন">উইকিমিডিয়া কমন্স (ফাইলের পাতা)</a>'
+                + ' <span lang="bn">(ছবির আলোকচিত্রী ও লাইসেন্স ওই পাতায় দেওয়া আছে)</span>';
+      }
+      slides += '<figure><div class="ph"><img src="' + src + '" alt="' + im.t + '" loading="lazy" decoding="async" width="1000" height="625" referrerpolicy="no-referrer"></div>'
               + '<figcaption><span class="cap-t" lang="bn">' + im.t + '</span>'
-              + '<span lang="bn">ছবির উৎস:</span> <a href="' + commonsFile(im.f) + '" target="_blank" rel="noopener noreferrer" title="উইকিমিডিয়া কমন্সে ছবির মূল পাতা খুলুন">উইকিমিডিয়া কমন্স (ফাইলের পাতা)</a>'
-              + ' <span lang="bn">(ছবির আলোকচিত্রী ও লাইসেন্স ওই পাতায় দেওয়া আছে)</span></figcaption></figure>';
+              + '<span lang="bn">ছবির উৎস:</span> ' + srcHTML + '</figcaption></figure>';
     });
     el.innerHTML =
         '<div class="sn-eyebrow" lang="bn">ঋতুর পরিচিতি</div>'
@@ -935,7 +962,7 @@
     });
     var ORD = ['১ম','২য়','৩য়','৪র্থ','৫ম','৬ষ্ঠ'], idx = 0;
     SEASONS.forEach(function(s, i){ if (s.key === cur) idx = i; });
-    document.getElementById('carLabel').textContent = (isToday ? 'এখন চলছে ' : 'নির্বাচিত তারিখে চলছে ') + ORD[idx] + ' ঋতু ' + SEASON[cur].bn + 'কাল';
+    document.getElementById('carLabel').textContent = (isToday ? 'এখন চলছে ' : 'নির্বাচিত তারিখে চলছে ') + ORD[idx] + ' ঋতু - ' + SEASON[cur].bn + 'কাল';
     renderSeasonNow(cur);
     if (cur !== carCur){
       carCur = cur;
